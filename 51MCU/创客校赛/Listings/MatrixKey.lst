@@ -1,0 +1,151 @@
+C51 COMPILER V9.59.0.0   MATRIXKEY                                                         11/29/2025 15:30:05 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE MATRIXKEY
+OBJECT MODULE PLACED IN .\Objects\MatrixKey.obj
+COMPILER INVOKED BY: D:\software\keil\C51\BIN\C51.EXE MatrixKey.c OPTIMIZE(8,SPEED) BROWSE INCDIR(..\创客校赛;.\Listings
+                    -) DEBUG OBJECTEXTEND PRINT(.\Listings\MatrixKey.lst) TABS(2) OBJECT(.\Objects\MatrixKey.obj)
+
+line level    source
+
+   1          #include <REGX52.H>
+   2          #include "delay.h"
+   3          #include "calculator.h"
+   4          // -------------------------- 3.1 总键盘扫描函数：返回按下按键的编号（0~19），无按键返回0xFF -------------
+             --------------
+   5          void key_scan_all(void) 
+   6          {
+   7   1          unsigned char key_num = 0xFF;  // 初始化为无按键
+   8   1      
+   9   1          // 第一步：扫描4个独立键（编号16~19）
+  10   1          if(KEY_EQ_PIN == 0) { delay_ms(20); if(KEY_EQ_PIN == 0) key_num = KEY_EQ; }
+  11   1          else if(KEY_CLR_PIN == 0) { delay_ms(20); if(KEY_CLR_PIN == 0) key_num = KEY_CLR; }
+  12   1          else if(KEY_M_PLUS_PIN == 0) { delay_ms(20); if(KEY_M_PLUS_PIN == 0) key_num = KEY_M_PLUS; }
+  13   1          else if(KEY_FN_PIN == 0) { delay_ms(20); if(KEY_FN_PIN == 0) key_num = KEY_FN; }
+  14   1      
+  15   1          // 第二步：扫描4×4矩阵键（编号0~15）
+  16   1          if(key_num == 0xFF) {  // 若独立键未按下，扫描矩阵键
+  17   2              // 行0扫描（1、2、3、+）
+  18   2              KEY_ROW0 = 0; KEY_ROW1=1; KEY_ROW2=1; KEY_ROW3=1;
+  19   2              delay_ms(1);
+  20   2              if(KEY_COL0 == 0) key_num = KEY_1;
+  21   2              else if(KEY_COL1 == 0) key_num = KEY_2;
+  22   2              else if(KEY_COL2 == 0) key_num = KEY_3;
+  23   2              else if(KEY_COL3 == 0) key_num = KEY_ADD;
+  24   2              KEY_ROW0 = 1;
+  25   2      
+  26   2              // 行1扫描（4、5、6、-）
+  27   2              if(key_num == 0xFF) {
+  28   3                  KEY_ROW1 = 0; delay_ms(1);
+  29   3                  if(KEY_COL0 == 0) key_num = KEY_4;
+  30   3                  else if(KEY_COL1 == 0) key_num = KEY_5;
+  31   3                  else if(KEY_COL2 == 0) key_num = KEY_6;
+  32   3                  else if(KEY_COL3 == 0) key_num = KEY_SUB;
+  33   3                  KEY_ROW1 = 1;
+  34   3              }
+  35   2      
+  36   2              // 行2扫描（7、8、9、×）
+  37   2              if(key_num == 0xFF) {
+  38   3                  KEY_ROW2 = 0; delay_ms(1);
+  39   3                  if(KEY_COL0 == 0) key_num = KEY_7;
+  40   3                  else if(KEY_COL1 == 0) key_num = KEY_8;
+  41   3                  else if(KEY_COL2 == 0) key_num = KEY_9;
+  42   3                  else if(KEY_COL3 == 0) key_num = KEY_MUL;
+  43   3                  KEY_ROW2 = 1;
+  44   3              }
+  45   2      
+  46   2              // 行3扫描（(、0、)、÷）
+  47   2              if(key_num == 0xFF) {
+  48   3                  KEY_ROW3 = 0; delay_ms(1);
+  49   3                  if(KEY_COL0 == 0) key_num = KEY_L_BRACK;
+  50   3                  else if(KEY_COL1 == 0) key_num = KEY_0;
+  51   3                  else if(KEY_COL2 == 0) key_num = KEY_R_BRACK;
+  52   3                  else if(KEY_COL3 == 0) key_num = KEY_DIV;
+  53   3                  KEY_ROW3 = 1;
+C51 COMPILER V9.59.0.0   MATRIXKEY                                                         11/29/2025 15:30:05 PAGE 2   
+
+  54   3              }
+  55   2          }
+  56   1      
+  57   1          return key_num;  // 返回按键编号（0~19）或0xFF（无按键）
+*** ERROR C174 IN LINE 57 OF MatrixKey.c: return-expression on void-function
+  58   1      }
+  59          
+  60          // -------------------------- 检测“指定编号的按键”是否按下（参数=按键编号）--------------------------
+  61          void key_processed(unsigned char key_num) 
+  62          {
+  63   1          key_pressed_flag = 0;  // 默认未按下
+  64   1      
+  65   1          // 根据按键编号，检测对应引脚电平
+  66   1          switch(key_num) 
+  67   1          {
+  68   2              // 独立键
+  69   2              case KEY_EQ:      if(KEY_EQ_PIN == 0) { delay_ms(20); if(KEY_EQ_PIN == 0) key_pressed_flag = 1; } 
+             -break;
+  70   2              case KEY_CLR:     if(KEY_CLR_PIN == 0) { delay_ms(20); if(KEY_CLR_PIN == 0) key_pressed_flag = 1; 
+             -} break;
+  71   2              case KEY_M_PLUS:  if(KEY_M_PLUS_PIN == 0) { delay_ms(20); if(KEY_M_PLUS_PIN == 0) key_pressed_flag
+             - = 1; } break;
+  72   2              case KEY_FN:      if(KEY_FN_PIN == 0) { delay_ms(20); if(KEY_FN_PIN == 0) key_pressed_flag = 1; } 
+             -break;
+  73   2              // 矩阵键
+  74   2              case KEY_1:       KEY_ROW0=0; delay_ms(1); if(KEY_COL0==0) { delay_ms(20); if(KEY_COL0==0) key_pre
+             -ssed_flag=1; } KEY_ROW0=1; break;
+  75   2              case KEY_2:       KEY_ROW0=0; delay_ms(1); if(KEY_COL1==0) { delay_ms(20); if(KEY_COL1==0) key_pre
+             -ssed_flag=1; } KEY_ROW0=1; break;
+  76   2              case KEY_3:       KEY_ROW0=0; delay_ms(1); if(KEY_COL2==0) { delay_ms(20); if(KEY_COL2==0) key_pre
+             -ssed_flag=1; } KEY_ROW0=1; break;
+  77   2              case KEY_ADD:     KEY_ROW0=0; delay_ms(1); if(KEY_COL3==0) { delay_ms(20); if(KEY_COL3==0) key_pre
+             -ssed_flag=1; } KEY_ROW0=1; break;
+  78   2              case KEY_4:       KEY_ROW1=0; delay_ms(1); if(KEY_COL0==0) { delay_ms(20); if(KEY_COL0==0) key_pre
+             -ssed_flag=1; } KEY_ROW1=1; break;
+  79   2              case KEY_5:       KEY_ROW1=0; delay_ms(1); if(KEY_COL1==0) { delay_ms(20); if(KEY_COL1==0) key_pre
+             -ssed_flag=1; } KEY_ROW1=1; break;
+  80   2              case KEY_6:       KEY_ROW1=0; delay_ms(1); if(KEY_COL2==0) { delay_ms(20); if(KEY_COL2==0) key_pre
+             -ssed_flag=1; } KEY_ROW1=1; break;
+  81   2              case KEY_SUB:     KEY_ROW1=0; delay_ms(1); if(KEY_COL3==0) { delay_ms(20); if(KEY_COL3==0) key_pre
+             -ssed_flag=1; } KEY_ROW1=1; break;
+  82   2              case KEY_7:       KEY_ROW2=0; delay_ms(1); if(KEY_COL0==0) { delay_ms(20); if(KEY_COL0==0) key_pre
+             -ssed_flag=1; } KEY_ROW2=1; break;
+  83   2              case KEY_8:       KEY_ROW2=0; delay_ms(1); if(KEY_COL1==0) { delay_ms(20); if(KEY_COL1==0) key_pre
+             -ssed_flag=1; } KEY_ROW2=1; break;
+  84   2              case KEY_9:       KEY_ROW2=0; delay_ms(1); if(KEY_COL2==0) { delay_ms(20); if(KEY_COL2==0) key_pre
+             -ssed_flag=1; } KEY_ROW2=1; break;
+  85   2              case KEY_MUL:     KEY_ROW2=0; delay_ms(1); if(KEY_COL3==0) { delay_ms(20); if(KEY_COL3==0) key_pre
+             -ssed_flag=1; } KEY_ROW2=1; break;
+  86   2              case KEY_L_BRACK: KEY_ROW3=0; delay_ms(1); if(KEY_COL0==0) { delay_ms(20); if(KEY_COL0==0) key_pre
+             -ssed_flag=1; } KEY_ROW3=1; break;
+  87   2              case KEY_0:       KEY_ROW3=0; delay_ms(1); if(KEY_COL1==0) { delay_ms(20); if(KEY_COL1==0) key_pre
+             -ssed_flag=1; } KEY_ROW3=1; break;
+  88   2              case KEY_R_BRACK: KEY_ROW3=0; delay_ms(1); if(KEY_COL2==0) { delay_ms(20); if(KEY_COL2==0) key_pre
+             -ssed_flag=1; } KEY_ROW3=1; break;
+  89   2              case KEY_DIV:     KEY_ROW3=0; delay_ms(1); if(KEY_COL3==0) { delay_ms(20); if(KEY_COL3==0) key_pre
+             -ssed_flag=1; } KEY_ROW3=1; break;
+  90   2              default: break;
+  91   2          }
+  92   1      }
+  93          
+  94          // -------------------------- 3.3 void函数：检测“FN+指定编号按键”是否同时按下（参数=目标按键编号）------
+C51 COMPILER V9.59.0.0   MATRIXKEY                                                         11/29/2025 15:30:05 PAGE 3   
+
+             ---------------------
+  95          void is_fn_comb(unsigned char target_key_num) 
+  96          {
+  97   1          fn_comb_flag = 0;  // 默认未触发
+  98   1      
+  99   1          // 步骤1：检测FN键（编号KEY_FN）是否按下
+ 100   1          key_process(KEY_FN);
+ 101   1          unsigned char fn_pressed = key_pressed_flag;
+ 102   1      
+ 103   1          // 步骤2：检测目标键是否按下
+ 104   1          key_is_pressed(target_key_num);
+ 105   1          unsigned char target_pressed = key_pressed_flag;
+ 106   1      
+ 107   1          // 步骤3：两个键都按下，置位组合键标志
+ 108   1          if(fn_pressed == 1 && target_pressed == 1) 
+ 109   1          {
+ 110   2              fn_comb_flag = 1;
+ 111   2          }
+ 112   1      }
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  1 ERROR(S)

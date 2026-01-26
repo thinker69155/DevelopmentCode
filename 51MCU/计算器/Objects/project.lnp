@@ -1,0 +1,11 @@
+".\Objects\main.obj",
+".\Objects\timer.obj",
+".\Objects\lcd1602.obj",
+".\Objects\keyboard.obj",
+".\Objects\calculator.obj",
+".\Objects\delay.obj",
+".\Objects\globalvars.obj",
+".\Objects\display.obj" 
+TO ".\Objects\project" 
+PRINT(".\Listings\project.m51") RAMSIZE(256) 
+DISABLEWARNING (16) 

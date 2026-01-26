@@ -1,0 +1,100 @@
+C51 COMPILER V9.59.0.0   TIMEUPDATE                                                        11/22/2025 22:09:02 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE TIMEUPDATE
+OBJECT MODULE PLACED IN .\Objects\timeupdate.obj
+COMPILER INVOKED BY: D:\software\keil\C51\BIN\C51.EXE timeupdate.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\L
+                    -istings\timeupdate.lst) TABS(2) OBJECT(.\Objects\timeupdate.obj)
+
+line level    source
+
+   1          #include "timeupdate.h"
+   2          
+   3          #include <REGX52.H>
+   4          #include "lcd1602.h"
+   5          #include "key.h"
+   6          #include <intrins.h>
+   7          #include "globalvars.h"
+   8          #include "delay.h"
+   9          #include "show.h"
+  10          #include "handlemode.h"
+  11          #include "modeswitch.h"
+  12          // 时间更新处理
+  13          void handle_time_update() 
+  14          {
+  15   1          if(flag_1s) 
+  16   1          {
+  17   2              flag_1s = 0;
+  18   2              
+  19   2              // 核心修改：移除 mode == CALENDAR 的判断，仅保留 set_flag == 0 的判断
+  20   2              // 含义：所有模式下，只要不在设置模式（set_flag=0），日历就持续计时
+  21   2              if(!set_flag) 
+  22   2              {  // 仅当 set_flag=1（日历/倒计时设置模式）时暂停计时
+  23   3                  calendar[5]++;  // 秒递增
+  24   3                  if(calendar[5] >= 60) 
+  25   3                  {
+  26   4                      calendar[5] = 0;
+  27   4                      calendar[4]++;  // 分递增
+  28   4                      if(calendar[4] >= 60) 
+  29   4                      {
+  30   5                          calendar[4] = 0;
+  31   5                          calendar[3]++;  // 时递增
+  32   5                          if(calendar[3] >= 24) 
+  33   5                          {
+  34   6                              calendar[3] = 0;
+  35   6                              calendar[2]++;  // 日递增
+  36   6                              // 月份天数边界处理（保持原逻辑不变）
+  37   6                              if((calendar[1]==4||calendar[1]==6||calendar[1]==9||calendar[1]==11) && calendar[2
+             -]>30) {
+  38   7                                  calendar[2] = 1;
+  39   7                                  calendar[1]++;  // 月递增
+  40   7                              }
+  41   6                              else if(calendar[2] > 31) 
+  42   6                              {
+  43   7                                  calendar[2] = 1;
+  44   7                                  calendar[1]++;  // 月递增
+  45   7                              }
+  46   6                              if(calendar[1] > 12) 
+  47   6                              {
+  48   7                                  calendar[1] = 1;
+  49   7                                  calendar[0]++;  // 年递增
+  50   7                              }
+  51   6                          }
+  52   5                      }
+  53   4                  }
+C51 COMPILER V9.59.0.0   TIMEUPDATE                                                        11/22/2025 22:09:02 PAGE 2   
+
+  54   3              }
+  55   2              
+  56   2              // 倒计时更新逻辑保持不变（仅在倒计时模式且运行时更新）
+  57   2              if(countdown_running && mode == COUNTDOWN) {
+  58   3                  if(countdown[0]==0 && countdown[1]==0 && countdown[2]==0) {
+  59   4                      countdown_running = 0;
+  60   4                      return;
+  61   4                  }
+  62   3                  countdown[2]--;
+  63   3                  if(countdown[2] >= 60) {
+  64   4                      countdown[2] = 59;
+  65   4                      countdown[1]--;
+  66   4                      if(countdown[1] >= 60) {
+  67   5                          countdown[1] = 59;
+  68   5                          countdown[0]--;
+  69   5                      }
+  70   4                  }
+  71   3              }
+  72   2          }
+  73   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    292    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

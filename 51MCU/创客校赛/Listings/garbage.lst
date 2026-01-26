@@ -1,0 +1,279 @@
+C51 COMPILER V9.59.0.0   GARBAGE                                                           11/29/2025 15:30:05 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE GARBAGE
+OBJECT MODULE PLACED IN .\Objects\garbage.obj
+COMPILER INVOKED BY: D:\software\keil\C51\BIN\C51.EXE garbage.c OPTIMIZE(8,SPEED) BROWSE INCDIR(..\创客校赛;.\Listings) 
+                    -DEBUG OBJECTEXTEND PRINT(.\Listings\garbage.lst) TABS(2) OBJECT(.\Objects\garbage.obj)
+
+line level    source
+
+   1          /*
+   2          // 获取4x4矩阵按键值（0~15：0~9、+、-、×、÷、(、)）
+   3          unsigned char key_get_val(void) {
+   4              unsigned char val = 0xFF;
+   5              // 行0扫描
+   6              KEY_ROW0 = 0; KEY_ROW1 = 1; KEY_ROW2 = 1; KEY_ROW3 = 1;
+   7              delay_ms(1);
+   8              if(KEY_COL0 == 0) val = 1;    // 1
+   9              else if(KEY_COL1 == 0) val = 2;// 2
+  10              else if(KEY_COL2 == 0) val = 3;// 3
+  11              else if(KEY_COL3 == 0) val = 10;// +
+  12              KEY_ROW0 = 1;
+  13              // 行1扫描
+  14              KEY_ROW1 = 0;
+  15              delay_ms(1);
+  16              if(KEY_COL0 == 0) val = 4;    //4
+  17              else if(KEY_COL1 == 0) val =5; //5
+  18              else if(KEY_COL2 == 0) val =6; //6
+  19              else if(KEY_COL3 == 0) val =11;// -
+  20              KEY_ROW1 =1;
+  21              // 行2扫描
+  22              KEY_ROW2 =0;
+  23              delay_ms(1);
+  24              if(KEY_COL0 ==0) val=7;       //7
+  25              else if(KEY_COL1 ==0) val=8;  //8
+  26              else if(KEY_COL2 ==0) val=9;  //9
+  27              else if(KEY_COL3 ==0) val=12; //×
+  28              KEY_ROW2 =1;
+  29              // 行3扫描
+  30              KEY_ROW3 =0;
+  31              delay_ms(1);
+  32              if(KEY_COL0 ==0) val=14;      //(
+  33              else if(KEY_COL1 ==0) val=0;  //0
+  34              else if(KEY_COL2 ==0) val=15; //)
+  35              else if(KEY_COL3 ==0) val=13; //÷
+  36              KEY_ROW3 =1;
+  37              return val;
+  38          }
+  39          */
+  40          
+  41          /*
+  42          
+  43          // LCD写指令（4位模式）
+  44          void lcd_write_cmd(unsigned char cmd) 
+  45          {
+  46              LCD_RS = 0;                    // 指令模式
+  47              LCD_DATA = (cmd >> 4) & 0x0F;  // 写高4位
+  48              LCD_E = 1;
+  49              delay_ms(1);
+  50              LCD_E = 0;
+  51              LCD_DATA = cmd & 0x0F;         // 写低4位
+  52              LCD_E = 1;
+  53              delay_ms(1);
+  54              LCD_E = 0;
+C51 COMPILER V9.59.0.0   GARBAGE                                                           11/29/2025 15:30:05 PAGE 2   
+
+  55              delay_ms(2);
+  56          }
+  57          
+  58          // LCD写数据（4位模式）
+  59          void lcd_write_data(unsigned char dat) {
+  60              LCD_RS = 1;                    // 数据模式
+  61              LCD_DATA = (dat >> 4) & 0x0F;  // 写高4位
+  62              LCD_E = 1;
+  63              delay_ms(1);
+  64              LCD_E = 0;
+  65              LCD_DATA = dat & 0x0F;         // 写低4位
+  66              LCD_E = 1;
+  67              delay_ms(1);
+  68              LCD_E = 0;
+  69              delay_ms(2);
+  70          }
+  71          
+  72          // LCD显示字符串（x：列0~15，y：行0~1）
+  73          void lcd_show_str(unsigned char x, unsigned char y, unsigned char *str) {
+  74              if(y == 0) lcd_write_cmd(0x80 + x);  // 第一行起始地址
+  75              else lcd_write_cmd(0xC0 + x);        // 第二行起始地址
+  76              while(*str != '\0' && x < 16) {
+  77                  lcd_write_data(*str);
+  78                  str++;
+  79                  x++;
+  80              }
+  81          }
+  82          */
+  83          
+  84          // 检测按键是否按下（消抖版）
+  85          void key_is_pressed(sbit key) 
+*** ERROR C141 IN LINE 85 OF garbage.c: syntax error near 'sbit', expected 'bit'
+  86          {
+  87   1          key_pressed_flag = 0;  // 先默认未按下
+*** ERROR C202 IN LINE 87 OF garbage.c: 'key_pressed_flag': undefined identifier
+  88   1          if(key == 0) 
+*** ERROR C202 IN LINE 88 OF garbage.c: 'key': undefined identifier
+  89   1          {         // 检测到按键低电平
+  90   2              delay_ms(20);      // 消抖延时
+  91   2              if(key == 0) 
+  92   2              {     // 消抖后仍为低电平，确认按下
+  93   3                  key_pressed_flag = 1;
+  94   3              }
+  95   2          }
+  96   1      }
+  97          
+  98          
+  99          // 组合键判断：返回1=FN+目标键同时按下，0=否
+ 100          void is_fn_comb(sbit target_key) 
+ 101          {
+ 102   1          fn_comb_flag = 0;  // 先默认未触发
+ 103   1          
+ 104   1          // 步骤1：检测FN键是否按下（调用上面的void函数）
+ 105   1          key_is_pressed(KEY_FN);
+ 106   1          unsigned char fn_pressed = key_pressed_flag;  // 暂存FN键状态
+ 107   1          
+ 108   1          // 步骤2：检测目标键是否按下
+ 109   1          key_is_pressed(target_key);
+ 110   1          unsigned char target_pressed = key_pressed_flag;  // 暂存目标键状态
+ 111   1          
+ 112   1          // 步骤3：两个键都按下，才置位组合键标志
+ 113   1          if(fn_pressed == 1 && target_pressed == 1) 
+C51 COMPILER V9.59.0.0   GARBAGE                                                           11/29/2025 15:30:05 PAGE 3   
+
+ 114   1          {
+ 115   2              fn_comb_flag = 1;
+ 116   2          }
+ 117   1      }
+ 118          
+ 119          / 键盘扫描（4x4矩阵+独立按键）
+ 120          void key_scan(void) 
+ 121          {
+ 122              // 第一步：处理独立键组合（FN+独立键）
+ 123              // 1. FN + KEY_CLR → MC（记忆清除）
+ 124              if(is_fn_comb(KEY_CLR))
+ 125              {
+ 126                  memory = 0;  // 记忆值清零
+ 127                  lcd_show_str(0, 1, "MC: 0.00");  // 第二行提示
+ 128                  delay_ms(500);  // 提示500ms
+ 129                  // 等待两个按键同时释放
+ 130                  while(key_is_pressed(KEY_FN) || key_is_pressed(KEY_CLR));
+ 131                  disp_update();  // 恢复显示
+ 132                  return;
+ 133              }
+ 134              // 2. FN + KEY_M_PLUS → M-（记忆减）
+ 135              if(is_fn_comb(KEY_M_PLUS)) 
+ 136              {
+ 137                  memory -= result;  // 记忆值 -= 当前结果
+ 138                  char mem_str[16];
+ 139                  sprintf(mem_str, "M-: %.2f", memory);
+ 140                  lcd_show_str(0, 1, mem_str);
+ 141                  delay_ms(500);
+ 142                  while(key_is_pressed(KEY_FN) || key_is_pressed(KEY_M_PLUS));
+ 143                  disp_update();
+ 144                  return;
+ 145              }
+ 146          
+ 147              // 第二步：处理矩阵键组合（FN+矩阵运算符键）
+ 148              unsigned char mat_key = matrix_key_scan();  // 扫描矩阵键（下方实现）
+ 149              if(mat_key != 0xFF) 
+ 150              {  // 有矩阵键按下
+ 151                  if(key_is_pressed(KEY_FN))
+ 152                  {  // 检测FN+矩阵键组合
+ 153                      switch(mat_key) 
+ 154                        {
+ 155                          case 10:  // FN + 矩阵键“+” → sin函数
+ 156                              sin_func();  // 自定义sin处理函数
+ 157                              break;
+ 158                          case 11:  // FN + 矩阵键“-” → x2函数
+ 159                              sq_func();   // 自定义x2处理函数
+ 160                              break;
+ 161                          case 12:  // FN + 矩阵键“×” → x?函数
+ 162                              pow_func();  // 自定义x?处理函数
+ 163                              break;
+ 164                          default:
+ 165                              break;
+ 166                      }
+ 167                      while(key_is_pressed(KEY_FN) || (matrix_key_scan() != 0xFF));
+ 168                      return;
+ 169                  }
+ 170              }
+ 171          
+ 172              // 第三步：处理单键（原逻辑不变，仅保留基础功能）
+ 173              // 3.1 独立键单按
+ 174              if(key_is_pressed(KEY_EQ))
+ 175              {  // 单按= → 计算
+C51 COMPILER V9.59.0.0   GARBAGE                                                           11/29/2025 15:30:05 PAGE 4   
+
+ 176                  calc_handler();  // 原计算逻辑
+ 177                  while(key_is_pressed(KEY_EQ));
+ 178                  return;
+ 179              }
+ 180              if(key_is_pressed(KEY_CLR)) 
+ 181              {  // 单按C → 清零
+ 182                  reset_calc();
+ 183                  while(key_is_pressed(KEY_CLR));
+ 184                  return;
+ 185              }
+ 186              if(key_is_pressed(KEY_M_PLUS)) 
+ 187              {  // 单按M+ → 记忆加
+ 188                  memory += result;
+ 189                  char mem_str[16];
+ 190                  sprintf(mem_str, "M+: %.2f", memory);
+ 191                  lcd_show_str(0, 1, mem_str);
+ 192                  delay_ms(500);
+ 193                  while(key_is_pressed(KEY_M_PLUS));
+ 194                  disp_update();
+ 195                  return;
+ 196              }
+ 197          
+ 198              // 3.2 矩阵键单按（数字、运算符、括号）
+ 199              if(mat_key != 0xFF) 
+ 200              {
+ 201                  matrix_key_handler(mat_key);  // 原矩阵键处理逻辑
+ 202                  while(matrix_key_scan() != 0xFF);
+ 203                  return;
+ 204              }
+ 205          }
+ 206          ////////////////////////////////////////////////////////////////////////
+ 207          // x2函数处理
+ 208          void sq_func(void) 
+ 209          {
+ 210              if(disp_len ==0) return;
+ 211              double val = atof((char*)disp_buf);
+ 212              result = val * val;
+ 213              reset_calc();
+ 214              sprintf((char*)disp_buf, "%.1f2=%.2f", val, result);
+ 215              disp_len = strlen((char*)disp_buf);
+ 216              flag_eq =1;
+ 217          }
+ 218          
+ 219          // x?函数处理（先输入底数→FN+×→输入指数→按=）
+ 220          void pow_func(void) 
+ 221          {
+ 222              if(disp_len ==0) return;
+ 223              pow_base = atof((char*)disp_buf);  // 记录底数
+ 224              reset_calc();
+ 225              sprintf((char*)disp_buf, "%.1f^?", pow_base);  // 提示输入指数
+ 226              disp_len = strlen((char*)disp_buf);
+ 227              flag_pow =1;  // 标记x?模式
+ 228          }
+ 229          
+ 230          // 计算处理（含x?模式判断）
+ 231          void calc_handler(void) 
+ 232          {
+ 233              if(flag_pow) 
+ 234              {  // x?模式：计算底数^指数
+ 235                  double exp = atof((char*)disp_buf+4);  // 提取指数（跳过"x.xx^?"）
+ 236                  result = pow(pow_base, exp);
+ 237                  reset_calc();
+C51 COMPILER V9.59.0.0   GARBAGE                                                           11/29/2025 15:30:05 PAGE 5   
+
+ 238                  sprintf((char*)disp_buf, "%.1f^%.1f=%.2f", pow_base, exp, result);
+ 239                  disp_len = strlen((char*)disp_buf);
+ 240                  flag_pow =0;
+ 241              }
+ 242              else 
+ 243              {  // 普通表达式计算
+ 244                  disp_buf[disp_len++] = '=';
+ 245                  calc_expression();  // 原表达式计算逻辑（含括号、优先级）
+ 246                  char temp[10];
+ 247                  sprintf(temp, "%.2f", result);
+ 248                  for(unsigned char i=0; temp[i]!='\0' && disp_len<16; i++) 
+ 249                  {
+ 250                      disp_buf[disp_len++] = temp[i];
+ 251                  }
+ 252              }
+ 253              flag_eq =1;
+ 254          }
+ 255          
+ 256          
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  3 ERROR(S)

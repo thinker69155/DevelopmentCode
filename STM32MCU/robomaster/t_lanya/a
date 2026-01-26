@@ -1,0 +1,35 @@
+#ifndef __MAIN_H
+#define __MAIN_H
+
+#include "stm32f1xx_hal.h"
+#include "globalvars.h"  // 包含全局变量头文件（必须添加！）
+
+/* 硬件引脚宏定义（不变） */
+// 四轴舵机PWM配置
+#define SERVO1_TIM    &htim4
+#define SERVO1_CHANNEL TIM_CHANNEL_1
+#define SERVO2_TIM    &htim4
+#define SERVO2_CHANNEL TIM_CHANNEL_2
+#define SERVO3_TIM    &htim4
+#define SERVO3_CHANNEL TIM_CHANNEL_3
+#define SERVO4_TIM    &htim4
+#define SERVO4_CHANNEL TIM_CHANNEL_4
+
+// 电机引脚配置
+#define MOTOR_IN1_PIN GPIO_PIN_4
+#define MOTOR_IN1_PORT GPIOA
+
+/* 功能参数宏定义（不变） */
+#define SERVO_0_DEG    5
+#define SERVO_45_DEG   10
+// ... 其他角度/转速宏定义（不变）
+
+/* 函数声明（不变） */
+void SystemClock_Config(void);
+static void MX_GPIO_Init(void);
+// ... 其他初始化函数声明
+#include "servo.h"
+#include "motor.h"
+#include "bluetooth.h"
+
+#endif /* __MAIN_H */

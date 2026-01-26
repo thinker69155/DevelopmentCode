@@ -1,0 +1,88 @@
+C51 COMPILER V9.59.0.0   RTC                                                               11/13/2025 01:28:19 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE RTC
+OBJECT MODULE PLACED IN .\Objects\rtc.obj
+COMPILER INVOKED BY: D:\software\keil\C51\BIN\C51.EXE rtc.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings
+                    -\rtc.lst) TABS(2) OBJECT(.\Objects\rtc.obj)
+
+line level    source
+
+   1          #include "rtc.h"
+   2          #include <intrins.h>
+   3          
+   4          // STC89C52内置RTC寄存器定义（根据实际型号调整，参考 datasheet）
+   5          sfr RTC_CON  = 0x80;  // RTC控制寄存器
+   6          sfr RTC_DIV  = 0x81;  // RTC分频器寄存器
+   7          sfr RTC_SEC  = 0x82;  // 秒寄存器（BCD码存储）
+   8          sfr RTC_MIN  = 0x83;  // 分寄存器（BCD码存储）
+   9          sfr RTC_HOUR = 0x84;  // 时寄存器（BCD码存储，24小时制）
+  10          sfr RTC_DAY  = 0x85;  // 日寄存器（BCD码存储）
+  11          sfr RTC_MON  = 0x86;  // 月寄存器（BCD码存储）
+  12          sfr RTC_YEAR = 0x87;  // 年寄存器（BCD码存储）
+  13          
+  14          // -------------------------- 内部函数（BCD码转换） --------------------------
+  15          /**
+  16           * @brief  BCD码转十进制（RTC寄存器数据为BCD格式）
+  17           * @param  bcd: BCD码数据（高4位=十位，低4位=个位）
+  18           * @retval 十进制数据
+  19           */
+  20          static unsigned char BCD2DEC(unsigned char bcd) {
+  21   1          return (bcd >> 4) * 10 + (bcd & 0x0F);
+  22   1      }
+  23          
+  24          /**
+  25           * @brief  十进制转BCD码（写入RTC寄存器时需转换）
+  26           * @param  dec: 十进制数据（0-99）
+  27           * @retval BCD码数据
+  28           */
+  29          static unsigned char DEC2BCD(unsigned char dec) {
+  30   1          return ((dec / 10) << 4) | (dec % 10);
+  31   1      }
+  32          
+  33          // -------------------------- 外部函数（供主文件调用） --------------------------
+  34          void RTC_Init(void) {
+  35   1          EA = 0;  // 关闭总中断，避免初始化被打断
+*** ERROR C202 IN LINE 35 OF rtc.c: 'EA': undefined identifier
+  36   1          RTC_CON = 0x01;  // 使能RTC模块（RTCEN=1）
+  37   1          RTC_DIV = 0x00;  // 清除分频器，启动计数
+  38   1          while (!(RTC_CON & 0x02));  // 等待RTC振荡器稳定（STB=1）
+  39   1          RTC_EnableInt();  // 使能秒中断
+  40   1          EA = 1;  // 开启总中断
+  41   1      }
+  42          
+  43          void RTC_SetTime(Calendar_TypeDef *cal) {
+  44   1          EA = 0;  // 关闭总中断，防止写入过程中数据错乱
+  45   1          // 将十进制日历数据转为BCD码，写入RTC寄存器
+  46   1          RTC_SEC  = DEC2BCD(cal->sec);    // 秒
+  47   1          RTC_MIN  = DEC2BCD(cal->min);    // 分
+  48   1          RTC_HOUR = DEC2BCD(cal->hour);   // 时（24小时制）
+  49   1          RTC_DAY  = DEC2BCD(cal->day);    // 日
+  50   1          RTC_MON  = DEC2BCD(cal->month);  // 月
+  51   1          RTC_YEAR = DEC2BCD(cal->year);   // 年
+  52   1          EA = 1;  // 开启总中断
+  53   1      }
+C51 COMPILER V9.59.0.0   RTC                                                               11/13/2025 01:28:19 PAGE 2   
+
+  54          
+  55          void RTC_ReadTime(Calendar_TypeDef *cal) {
+  56   1          EA = 0;  // 关闭总中断，避免读取过程中数据变化
+  57   1          // 从RTC寄存器读取BCD码，转为十进制存入日历结构体
+  58   1          cal->sec  = BCD2DEC(RTC_SEC & 0x7F);  // 清0秒寄存器的"停止位"（bit7）
+  59   1          cal->min  = BCD2DEC(RTC_MIN);
+  60   1          cal->hour = BCD2DEC(RTC_HOUR & 0x3F); // 清0时寄存器的24/12小时制标志位
+  61   1          cal->day  = BCD2DEC(RTC_DAY);
+  62   1          cal->month = BCD2DEC(RTC_MON);
+  63   1          cal->year = BCD2DEC(RTC_YEAR);
+  64   1          EA = 1;  // 开启总中断
+  65   1      }
+  66          
+  67          void RTC_EnableInt(void) {
+  68   1          RTC_CON |= 0x04;  // 置位RTC中断使能位（RTCIE=1）
+  69   1      }
+  70          
+  71          void RTC_ClearIntFlag(void) {
+  72   1          RTC_CON &= ~0x08;  // 清除RTC中断标志位（RTCIE=0）
+  73   1      }
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  1 ERROR(S)

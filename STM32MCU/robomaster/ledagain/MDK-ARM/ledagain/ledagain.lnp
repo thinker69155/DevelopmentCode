@@ -1,0 +1,22 @@
+--cpu Cortex-M3
+"ledagain\startup_stm32f103xb.o"
+"ledagain\main.o"
+"ledagain\gpio.o"
+"ledagain\stm32f1xx_it.o"
+"ledagain\stm32f1xx_hal_msp.o"
+"ledagain\stm32f1xx_hal_gpio_ex.o"
+"ledagain\stm32f1xx_hal.o"
+"ledagain\stm32f1xx_hal_rcc.o"
+"ledagain\stm32f1xx_hal_rcc_ex.o"
+"ledagain\stm32f1xx_hal_gpio.o"
+"ledagain\stm32f1xx_hal_dma.o"
+"ledagain\stm32f1xx_hal_cortex.o"
+"ledagain\stm32f1xx_hal_pwr.o"
+"ledagain\stm32f1xx_hal_flash.o"
+"ledagain\stm32f1xx_hal_flash_ex.o"
+"ledagain\stm32f1xx_hal_exti.o"
+"ledagain\system_stm32f1xx.o"
+--strict --scatter "ledagain\ledagain.sct"
+--summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
+--info sizes --info totals --info unused --info veneers
+--list "ledagain.map" -o ledagain\ledagain.axf

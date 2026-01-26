@@ -1,0 +1,163 @@
+C51 COMPILER V9.59.0.0   KEYBOARD                                                          12/09/2025 16:04:27 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE KEYBOARD
+OBJECT MODULE PLACED IN .\Objects\keyboard.obj
+COMPILER INVOKED BY: D:\software\keil\C51\BIN\C51.EXE keyboard.c OPTIMIZE(8,SPEED) BROWSE INCDIR(..\计算器) DEBUG OBJECT
+                    -EXTEND PRINT(.\Listings\keyboard.lst) TABS(2) OBJECT(.\Objects\keyboard.obj)
+
+line level    source
+
+   1          #include <REGX52.H>
+   2          #include "delay.h"
+   3          #include "globalvars.h"
+   4          
+   5            
+   6          
+   7          
+   8          // 独立按键定义（P3^0=Key1，P3^1=Key2）
+   9          sbit Key1 = P3^0;  
+  10          sbit Key2 = P3^1;
+  11          
+  12          unsigned char key_duli(void) 
+  13          {
+  14   1          // 按Key1切换到普通模式
+  15   1          if (Key1 == 0 && Key2 == 1) 
+  16   1          {
+  17   2              delay(20);  // 消抖
+  18   2              if (Key1 == 0 && Key2 == 1) 
+  19   2              {
+  20   3                  duli = 1;
+  21   3                  while (Key1 == 0 && Key2 == 1);  
+  22   3              }
+  23   2          }
+  24   1          
+  25   1          // 按Key2切换到FN模式
+  26   1          if (Key1 == 1 && Key2 == 0) 
+  27   1          {   
+  28   2             delay(20);  // 消抖
+  29   2              if (Key1 == 1 && Key2 == 0) 
+  30   2              {
+  31   3                  duli = 2;
+  32   3                  while (Key1 == 1 && Key2 == 0);           
+  33   3              }
+  34   2          }       
+  35   1          return duli;
+  36   1      }
+  37          
+  38          //矩阵键盘扫描
+  39          unsigned char key_scan(void) 
+  40          {
+  41   1          unsigned char key_val = 0;
+  42   1          
+  43   1      //    // 先检测独立按键是否按下：若按下，不扫描矩阵（避免冲突）
+  44   1      //    if (Key1 == 0 || Key2 == 0) 
+  45   1      //    {
+  46   1      //        return 0;
+  47   1      //    }
+  48   1          
+  49   1          // 矩阵键盘扫描（原逻辑保留，仅在无独立按键时执行）
+  50   1          P3 = 0xff;       
+  51   1          P3_4 = 0;        
+  52   1          if (P3_0 == 0) { delay(20); while(P3_0==0); delay(20); key_val=6; }
+  53   1          if (P3_1 == 0) { delay(20); while(P3_1==0); delay(20); key_val=10; }
+  54   1          if (P3_2 == 0) { delay(20); while(P3_2==0); delay(20); key_val=14; }
+C51 COMPILER V9.59.0.0   KEYBOARD                                                          12/09/2025 16:04:27 PAGE 2   
+
+  55   1          if (P3_3 == 0) { delay(20); while(P3_3==0); delay(20); key_val=18; }
+  56   1          
+  57   1          P3 = 0xff;
+  58   1          P3_5 = 0;        
+  59   1          if (P3_0 == 0) { delay(20); while(P3_0==0); delay(20); key_val=7; }
+  60   1          if (P3_1 == 0) { delay(20); while(P3_1==0); delay(20); key_val=11; }
+  61   1          if (P3_2 == 0) { delay(20); while(P3_2==0); delay(20); key_val=15; }
+  62   1          if (P3_3 == 0) { delay(20); while(P3_3==0); delay(20); key_val=19; }
+  63   1          
+  64   1          P3 = 0xff;
+  65   1          P3_6 = 0;        
+  66   1          if (P3_0 == 0) { delay(20); while(P3_0==0); delay(20); key_val=8; }
+  67   1          if (P3_1 == 0) { delay(20); while(P3_1==0); delay(20); key_val=12; }
+  68   1          if (P3_2 == 0) { delay(20); while(P3_2==0); delay(20); key_val=16; }
+  69   1          if (P3_3 == 0) { delay(20); while(P3_3==0); delay(20); key_val=20; }
+  70   1          
+  71   1          P3 = 0xff;
+  72   1          P3_7 = 0;        
+  73   1          if (P3_0 == 0) { delay(20); while(P3_0==0); delay(20); key_val=9; }
+  74   1          if (P3_1 == 0) { delay(20); while(P3_1==0); delay(20); key_val=13; }
+  75   1          if (P3_2 == 0) { delay(20); while(P3_2==0); delay(20); key_val=17; }
+  76   1          if (P3_3 == 0) { delay(20); while(P3_3==0); delay(20); key_val=21; }
+  77   1          
+  78   1          return key_val;
+  79   1      }
+  80          
+  81          unsigned char key_to_data() 
+  82          {
+  83   1          unsigned char key = key_scan();
+  84   1          get = 0;  // 每次调用重置
+  85   1              // 普通模式
+  86   1              if (duli == 1) 
+  87   1              {
+  88   2                  P1_1 = 0;  // 确保指示灯状态正确
+  89   2                  P1_0 = 1;
+  90   2                  switch(key) 
+  91   2                  {
+  92   3                      case 6:  get = 1;      break;
+  93   3                      case 7:  get = 2;      break;
+  94   3                      case 8:  get = 3;      break;
+  95   3                      case 10: get = 4;      break;
+  96   3                      case 11: get = 5;      break;
+  97   3                      case 12: get = 6;      break;
+  98   3                      case 14: get = 7;      break;
+  99   3                      case 15: get = 8;      break;
+ 100   3                      case 16: get = 9;      break;
+ 101   3                      case 18: get = '(';    break;
+ 102   3                      case 19: get = 0;      break;
+ 103   3                      case 20: get = ')';    break;
+ 104   3                      case 17: get = '=';    break;
+ 105   3                      default: get = 0;      break;
+ 106   3                  }
+ 107   2              }
+ 108   1              // FN模式
+ 109   1              else if (duli == 2) 
+ 110   1              {
+ 111   2                  P1_0 = 0;  // 确保指示灯状态正确
+ 112   2                  P1_1 = 1;
+ 113   2                  switch(key) 
+ 114   2                  {
+ 115   3                      case 6:  get = '+';    break;  // 四则运算符
+ 116   3                      case 10: get = '-';    break;
+C51 COMPILER V9.59.0.0   KEYBOARD                                                          12/09/2025 16:04:27 PAGE 3   
+
+ 117   3                      case 14: get = '*';    break;
+ 118   3                      case 18: get = '/';    break;
+ 119   3                      case 7:  get = 's';    break;  // 三角运算符（sin）
+ 120   3                      case 11: get = 'c';    break;  // cos
+ 121   3                      case 15: get = 't';    break;  // tan
+ 122   3                      case 19: get = 'n';    break;  // 幂运算符
+ 123   3                      case 8:  get = 'u';    break;  // 记忆功能
+ 124   3                      case 12: get = 'd';    break;
+ 125   3                      case 16: get = 'q';    break;
+ 126   3                      case 20: get = 'k';    break;  // 清零
+ 127   3                      default: get = 0;      break;
+ 128   3                  }
+ 129   2                  // 可选：FN模式按功能键后自动退出，恢复普通模式
+ 130   2                  // duli = 1;
+ 131   2              }
+ 132   1          
+ 133   1          return get;
+ 134   1      }
+ 135          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    765    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       1
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,70 @@
+C51 COMPILER V9.59.0.0   MAIN                                                              11/27/2025 23:10:49 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: D:\software\keil\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listing
+                    -s\main.lst) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include <REGX52.H>
+   2          #include "lcd1602.h"
+   3          #include "key.h"
+   4          #include <intrins.h>
+   5          #include "globalvars.h"
+   6          #include "delay.h"
+   7          #include "show.h"
+   8          #include "handlemode.h"
+   9          #include "modeswitch.h"
+  10          #include "timeupdate.h"
+  11          #include "timer.h"
+  12          
+  13          void delay(unsigned int ms);
+  14          
+  15          // 主函数
+  16          void main() 
+  17          {
+  18   1          unsigned char key;
+  19   1          LCD_Init();
+  20   1          Timer0_Init();
+  21   1          show_calendar();
+  22   1          
+  23   1          while(1) 
+  24   1          {
+  25   2              key = key_scan();          // 按键扫描（无按键返回0）
+  26   2              handle_time_update();      // 时间更新
+  27   2              
+  28   2              switch(mode) 
+  29   2              {
+  30   3                  case CALENDAR:
+  31   3                      handle_calendar_mode(key);
+  32   3                      break;
+  33   3                  case COUNTDOWN:
+  34   3                      handle_countdown_mode(key);
+  35   3                      break;
+  36   3                  case STOPWATCH:
+  37   3                      handle_stopwatch_mode(key);
+  38   3                      break;
+  39   3                  case VIEW_RECORD:
+  40   3                      handle_view_record_mode(key);
+  41   3                      break;
+  42   3              }
+  43   2          }
+  44   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     60    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       1
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+C51 COMPILER V9.59.0.0   MAIN                                                              11/27/2025 23:10:49 PAGE 2   
+
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

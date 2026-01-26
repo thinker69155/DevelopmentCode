@@ -1,0 +1,29 @@
+{
+    "configurations": [
+        {
+            "name": "STM32",
+            "compileCommands": "${workspaceFolder}/build/Debug/compile_commands.json",
+            "intelliSenseMode": "windows-msvc-x64",
+            "cStandard": "c17",
+            "cppStandard": "gnu++17",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "d:/study/stm32/stm32demo/libRich",
+                "c:/Users/c'z'w'x'k'n/.vscode/extensions/richintelligent.richextension-4.0.0/include",
+                "c:/Users/c'z'w'x'k'n/.vscode/extensions/richintelligent.richextension-4.0.0/include/Atmel"
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE",
+                "interrupt=",
+                "code=",
+                "xdata="
+            ],
+            "forcedInclude": [
+                "c:/Users/c'z'w'x'k'n/.vscode/extensions/richintelligent.richextension-4.0.0/include/libRichForced.h"
+            ]
+        }
+    ],
+    "version": 4
+}

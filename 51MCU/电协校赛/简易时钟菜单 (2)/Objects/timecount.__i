@@ -1,0 +1,1 @@
+"timecount.c" OPTIMIZE (8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\timecount.lst) TABS (2) OBJECT(.\Objects\timecount.obj)

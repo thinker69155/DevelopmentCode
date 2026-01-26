@@ -1,0 +1,1 @@
+"garbage.c" OPTIMIZE (8,SPEED) BROWSE INCDIR(..\创客校赛;.\Listings) DEBUG OBJECTEXTEND PRINT(.\Listings\garbage.lst) TABS (2) OBJECT(.\Objects\garbage.obj)

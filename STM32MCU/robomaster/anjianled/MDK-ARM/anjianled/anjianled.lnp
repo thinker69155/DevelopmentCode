@@ -1,0 +1,23 @@
+--cpu Cortex-M3
+"anjianled\startup_stm32f103xb.o"
+"anjianled\main.o"
+"anjianled\stm32f1xx_it.o"
+"anjianled\stm32f1xx_hal_msp.o"
+"anjianled\stm32f1xx_hal_gpio_ex.o"
+"anjianled\stm32f1xx_hal_tim.o"
+"anjianled\stm32f1xx_hal_tim_ex.o"
+"anjianled\stm32f1xx_hal.o"
+"anjianled\stm32f1xx_hal_rcc.o"
+"anjianled\stm32f1xx_hal_rcc_ex.o"
+"anjianled\stm32f1xx_hal_gpio.o"
+"anjianled\stm32f1xx_hal_dma.o"
+"anjianled\stm32f1xx_hal_cortex.o"
+"anjianled\stm32f1xx_hal_pwr.o"
+"anjianled\stm32f1xx_hal_flash.o"
+"anjianled\stm32f1xx_hal_flash_ex.o"
+"anjianled\stm32f1xx_hal_exti.o"
+"anjianled\system_stm32f1xx.o"
+--strict --scatter "anjianled\anjianled.sct"
+--summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
+--info sizes --info totals --info unused --info veneers
+--list "anjianled.map" -o anjianled\anjianled.axf

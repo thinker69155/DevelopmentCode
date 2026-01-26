@@ -1,0 +1,46 @@
+C51 COMPILER V9.59.0.0   MODESWITCH                                                        11/22/2025 22:00:14 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE MODESWITCH
+OBJECT MODULE PLACED IN .\Objects\modeswitch.obj
+COMPILER INVOKED BY: D:\software\keil\C51\BIN\C51.EXE modeswitch.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\L
+                    -istings\modeswitch.lst) TABS(2) OBJECT(.\Objects\modeswitch.obj)
+
+line level    source
+
+   1          #include "modeswitch.h"
+   2          #include <globalvars.h>
+   3          #include "LCD1602.h"
+   4          #include "show.h"
+   5          // 模式切换
+   6          void mode_switch() 
+   7          {
+   8   1          mode++;
+   9   1          if(mode > VIEW_RECORD) mode = CALENDAR;  // 循环切换：日历→倒计时→秒表→查看→日历
+  10   1          set_flag = 0;
+  11   1          stopwatch_running = 0;
+  12   1          select_pos = 0;
+  13   1          LCD_WriteCommand(0x01);  // 清屏
+  14   1      
+  15   1          // 核心修复：切换到哪个模式，就立即调用哪个模式的显示函数
+  16   1          switch(mode) {
+  17   2              case CALENDAR: show_calendar(); break;
+  18   2              case COUNTDOWN: show_countdown(); break;
+  19   2              case STOPWATCH: show_stopwatch(); break;
+  20   2              case VIEW_RECORD: show_records(); break;  // 关键：进入查看模式直接显示
+  21   2          }
+  22   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     56    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

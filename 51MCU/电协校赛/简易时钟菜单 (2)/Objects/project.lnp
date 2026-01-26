@@ -1,0 +1,14 @@
+".\Objects\main.obj",
+".\Objects\LCD1602.obj",
+".\Objects\delay.obj",
+".\Objects\see_lcd1602.obj",
+".\Objects\key.obj",
+".\Objects\globalvars.obj",
+".\Objects\show.obj",
+".\Objects\modeswitch.obj",
+".\Objects\handlemode.obj",
+".\Objects\timeupdate.obj",
+".\Objects\timer.obj" 
+TO ".\Objects\project" 
+PRINT(".\Listings\project.m51") RAMSIZE(256) 
+DISABLEWARNING (16) 

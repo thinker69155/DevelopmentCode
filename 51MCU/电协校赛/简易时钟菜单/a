@@ -1,0 +1,92 @@
+#include "eeprom.h"
+#include <intrins.h>
+
+// -------------------------- 内部函数（仅本文件使用） --------------------------
+/**
+ * @brief  关闭IAP/EEPROM操作（避免误触发）
+ * @param  无
+ * @retval 无
+ */
+static void IAP_Disable(void) {
+    IAP_CONTR = 0x00;  // 关闭IAP使能
+    IAP_CMD   = 0x00;  // 清除命令寄存器
+    IAP_ADDRH = 0x00;  // 清除地址寄存器
+    IAP_ADDRL = 0x00;
+}
+
+// -------------------------- 外部函数（供主文件调用） --------------------------
+void EEPROM_WriteByte(unsigned int addr, unsigned char dat) {
+    EA = 0;  // 关闭总中断，避免操作过程中被打断
+    IAP_CONTR = 0x81;  // 使能IAP（ISPEN=1，WAIT=0，12MHz晶振适配）
+    IAP_CMD   = 0x02;  // 选择IAP写命令
+    IAP_ADDRH = addr >> 8;  // 地址高8位
+    IAP_ADDRL = addr & 0xFF; // 地址低8位
+    IAP_DATA  = dat;         // 写入的数据
+    _nop_(); _nop_();        // 延时，确保命令稳定
+    IAP_TRIG  = 0x46;        // 触发IAP操作（必须按0x46→0xB9顺序）
+    IAP_TRIG  = 0xB9;
+    _nop_(); _nop_();
+    IAP_Disable();  // 关闭IAP，防止误操作
+    EA = 1;         // 开启总中断
+}
+
+unsigned char EEPROM_ReadByte(unsigned int addr) {
+    unsigned char dat;
+    EA = 0;  // 关闭总中断
+    IAP_CONTR = 0x81;  // 使能IAP
+    IAP_CMD   = 0x01;  // 选择IAP读命令
+    IAP_ADDRH = addr >> 8;
+    IAP_ADDRL = addr & 0xFF;
+    _nop_(); _nop_();
+    IAP_TRIG  = 0x46;  // 触发IAP操作
+    IAP_TRIG  = 0xB9;
+    _nop_(); _nop_();
+    dat = IAP_DATA;    // 读取数据
+    IAP_Disable();     // 关闭IAP
+    EA = 1;            // 开启总中断
+    return dat;
+}
+
+void EEPROM_SaveCalendar(Calendar_TypeDef *cal) {
+    // 日历数据按：年→月→日→时→分→秒 顺序存储（BCD码格式，适配RTC）
+    EEPROM_WriteByte(EEPROM_ADDR_CAL + 0, (cal->year / 10) << 4 | (cal->year % 10));  // 年→BCD码
+    EEPROM_WriteByte(EEPROM_ADDR_CAL + 1, (cal->month / 10) << 4 | (cal->month % 10));// 月→BCD码
+    EEPROM_WriteByte(EEPROM_ADDR_CAL + 2, (cal->day / 10) << 4 | (cal->day % 10));    // 日→BCD码
+    EEPROM_WriteByte(EEPROM_ADDR_CAL + 3, (cal->hour / 10) << 4 | (cal->hour % 10));  // 时→BCD码
+    EEPROM_WriteByte(EEPROM_ADDR_CAL + 4, (cal->min / 10) << 4 | (cal->min % 10));    // 分→BCD码
+    EEPROM_WriteByte(EEPROM_ADDR_CAL + 5, (cal->sec / 10) << 4 | (cal->sec % 10));    // 秒→BCD码
+    
+    EEPROM_WriteByte(EEPROM_ADDR_INIT_FLAG, 0xAA);  // 标记为已初始化
+}
+
+bit EEPROM_LoadCalendar(Calendar_TypeDef *cal) {
+    unsigned char year_bcd, month_bcd, day_bcd;
+    unsigned char hour_bcd, min_bcd, sec_bcd;
+    
+    // 先检查是否已初始化
+    if (EEPROM_ReadByte(EEPROM_ADDR_INIT_FLAG) != 0xAA) {
+        return 0;  // 未初始化，读取失败
+    }
+    
+    // 读取BCD码格式的日历数据，转换为十进制
+    year_bcd  = EEPROM_ReadByte(EEPROM_ADDR_CAL + 0);
+    month_bcd = EEPROM_ReadByte(EEPROM_ADDR_CAL + 1);
+    day_bcd   = EEPROM_ReadByte(EEPROM_ADDR_CAL + 2);
+    hour_bcd  = EEPROM_ReadByte(EEPROM_ADDR_CAL + 3);
+    min_bcd   = EEPROM_ReadByte(EEPROM_ADDR_CAL + 4);
+    sec_bcd   = EEPROM_ReadByte(EEPROM_ADDR_CAL + 5);
+    
+    // BCD码→十进制（高4位=十位，低4位=个位）
+    cal->year  = (year_bcd >> 4) * 10 + (year_bcd & 0x0F);
+    cal->month = (month_bcd >> 4) * 10 + (month_bcd & 0x0F);
+    cal->day   = (day_bcd >> 4) * 10 + (day_bcd & 0x0F);
+    cal->hour  = (hour_bcd >> 4) * 10 + (hour_bcd & 0x0F);
+    cal->min   = (min_bcd >> 4) * 10 + (min_bcd & 0x0F);
+    cal->sec   = (sec_bcd >> 4) * 10 + (sec_bcd & 0x0F);
+    
+    return 1;  // 读取成功
+}
+
+bit EEPROM_CheckInit(void) {
+    return (EEPROM_ReadByte(EEPROM_ADDR_INIT_FLAG) == 0xAA) ? 1 : 0;
+}

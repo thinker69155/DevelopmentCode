@@ -1,0 +1,325 @@
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                    12/14/2025  17:40:28  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V6.22.2.0, INVOKED BY:
+D:\SOFTWARE\KEIL\C51\BIN\BL51.EXE .\Objects\main.obj, .\Objects\delay.obj, .\Objects\MatrixKey.obj TO .\Objects\project 
+>> PRINT (.\Listings\project.m51) RAMSIZE (256)
+
+
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  .\Objects\main.obj (MAIN)
+  .\Objects\delay.obj (DELAY)
+  .\Objects\MatrixKey.obj (MATRIXKEY)
+  D:\SOFTWARE\KEIL\C51\LIB\C51S.LIB (?C_STARTUP)
+  D:\SOFTWARE\KEIL\C51\LIB\C51S.LIB (?C?SIDIV)
+  D:\SOFTWARE\KEIL\C51\LIB\C51S.LIB (?C_INIT)
+  D:\SOFTWARE\KEIL\C51\LIB\C51S.LIB (?C?UIDIV)
+
+
+LINK MAP OF MODULE:  .\Objects\project (MAIN)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            DATA    0008H     0006H     UNIT         ?DT?MAIN
+            DATA    000EH     0006H     UNIT         _DATA_GROUP_
+            IDATA   0014H     0001H     UNIT         ?STACK
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+            CODE    0003H     014AH     UNIT         ?PR?MATRIXKEY?MATRIXKEY
+            CODE    014DH     008CH     UNIT         ?C_C51STARTUP
+            CODE    01D9H     008BH     UNIT         ?C?LIB_CODE
+            CODE    0264H     0073H     UNIT         ?PR?COUNTER_SET_MANUAL?MAIN
+            CODE    02D7H     0061H     UNIT         ?PR?MAIN?MAIN
+            CODE    0338H     004FH     UNIT         ?PR?COUNTER_TWIST?MAIN
+            CODE    0387H     0047H     UNIT         ?PR?CONCATENATE_BIT?MAIN
+            CODE    03CEH     0020H     UNIT         ?PR?COUNTER_SINGLE?MAIN
+            CODE    03EEH     0020H     UNIT         ?PR?COUNTER_DOUBLE?MAIN
+            CODE    040EH     0014H     UNIT         ?PR?_DELAY?DELAY
+            CODE    0422H     0013H     UNIT         ?C_INITSEG
+
+
+
+OVERLAY MAP OF MODULE:   .\Objects\project (MAIN)
+
+
+SEGMENT                               DATA_GROUP 
+  +--> CALLED SEGMENT               START    LENGTH
+---------------------------------------------------
+?C_C51STARTUP                       -----    -----
+  +--> ?PR?MAIN?MAIN
+  +--> ?C_INITSEG
+
+?PR?MAIN?MAIN                       000EH    0001H
+  +--> ?PR?MATRIXKEY?MATRIXKEY
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  12/14/2025  17:40:28  PAGE 2
+
+
+  +--> ?PR?COUNTER_SINGLE?MAIN
+  +--> ?PR?COUNTER_TWIST?MAIN
+  +--> ?PR?COUNTER_DOUBLE?MAIN
+  +--> ?PR?COUNTER_SET_MANUAL?MAIN
+  +--> ?PR?_DELAY?DELAY
+
+?PR?MATRIXKEY?MATRIXKEY             0013H    0001H
+  +--> ?PR?_DELAY?DELAY
+
+?PR?COUNTER_SINGLE?MAIN             -----    -----
+  +--> ?PR?MATRIXKEY?MATRIXKEY
+  +--> ?PR?_DELAY?DELAY
+
+?PR?COUNTER_TWIST?MAIN              000FH    0004H
+  +--> ?PR?MATRIXKEY?MATRIXKEY
+  +--> ?PR?_DELAY?DELAY
+
+?PR?COUNTER_DOUBLE?MAIN             -----    -----
+  +--> ?PR?MATRIXKEY?MATRIXKEY
+  +--> ?PR?_DELAY?DELAY
+  +--> ?PR?CONCATENATE_BIT?MAIN
+
+?PR?COUNTER_SET_MANUAL?MAIN         -----    -----
+  +--> ?PR?MATRIXKEY?MATRIXKEY
+  +--> ?PR?_DELAY?DELAY
+  +--> ?PR?CONCATENATE_BIT?MAIN
+
+
+
+SYMBOL TABLE OF MODULE:  .\Objects\project (MAIN)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        MAIN
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  D:0090H         PUBLIC        P1
+  C:0264H         PUBLIC        counter_set_manual
+  C:0338H         PUBLIC        counter_twist
+  C:02D7H         PUBLIC        main
+  C:0387H         PUBLIC        concatenate_bit
+  D:0008H         PUBLIC        count1
+  C:03EEH         PUBLIC        counter_double
+  D:0009H         PUBLIC        bits1
+  D:000AH         PUBLIC        bits2
+  C:03CEH         PUBLIC        counter_single
+  D:000BH         PUBLIC        count2_1
+  D:000CH         PUBLIC        count2_2
+  D:000DH         PUBLIC        func_choice
+  -------         PROC          CONCATENATE_BIT
+  -------         DO            
+  D:0003H         SYMBOL        val1
+  D:0007H         SYMBOL        val2
+  -------         ENDDO         
+  C:0387H         LINE#         14
+  C:0387H         LINE#         15
+  C:0387H         LINE#         16
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  12/14/2025  17:40:28  PAGE 3
+
+
+  C:03A3H         LINE#         17
+  C:03BFH         LINE#         18
+  C:03CDH         LINE#         19
+  -------         ENDPROC       CONCATENATE_BIT
+  -------         PROC          COUNTER_SINGLE
+  -------         DO            
+  D:0007H         SYMBOL        key
+  -------         ENDDO         
+  C:03CEH         LINE#         22
+  C:03CEH         LINE#         23
+  C:03CEH         LINE#         24
+  C:03D1H         LINE#         25
+  C:03D6H         LINE#         26
+  C:03D6H         LINE#         27
+  C:03D8H         LINE#         28
+  C:03E1H         LINE#         29
+  C:03E6H         LINE#         30
+  C:03E6H         LINE#         31
+  C:03E9H         LINE#         32
+  -------         ENDPROC       COUNTER_SINGLE
+  -------         PROC          COUNTER_TWIST
+  -------         DO            
+  D:000FH         SYMBOL        count1_twist
+  D:0010H         SYMBOL        temp
+  D:0011H         SYMBOL        i
+  D:0007H         SYMBOL        key
+  -------         ENDDO         
+  C:0338H         LINE#         36
+  C:0338H         LINE#         37
+  C:0338H         LINE#         38
+  C:033BH         LINE#         39
+  C:033EH         LINE#         40
+  C:0342H         LINE#         43
+  C:0345H         LINE#         44
+  C:034AH         LINE#         45
+  C:034AH         LINE#         46
+  C:034CH         LINE#         47
+  C:0355H         LINE#         48
+  C:035AH         LINE#         49
+  C:035AH         LINE#         52
+  C:035FH         LINE#         53
+  C:035FH         LINE#         54
+  C:0365H         LINE#         55
+  C:036BH         LINE#         56
+  C:0371H         LINE#         57
+  C:037FH         LINE#         58
+  C:0382H         LINE#         59
+  -------         ENDPROC       COUNTER_TWIST
+  -------         PROC          COUNTER_DOUBLE
+  -------         DO            
+  D:0007H         SYMBOL        key
+  -------         ENDDO         
+  C:03EEH         LINE#         63
+  C:03EEH         LINE#         64
+  C:03EEH         LINE#         65
+  C:03F1H         LINE#         66
+  C:03F9H         LINE#         67
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  12/14/2025  17:40:28  PAGE 4
+
+
+  C:03F9H         LINE#         68
+  C:03FDH         LINE#         69
+  C:0404H         LINE#         70
+  C:0404H         LINE#         71
+  C:0409H         LINE#         72
+  -------         ENDPROC       COUNTER_DOUBLE
+  -------         PROC          COUNTER_SET_MANUAL
+  -------         DO            
+  D:0007H         SYMBOL        key
+  -------         ENDDO         
+  C:0264H         LINE#         76
+  C:0264H         LINE#         77
+  C:0264H         LINE#         78
+  C:0267H         LINE#         79
+  C:0292H         LINE#         80
+  C:0292H         LINE#         81
+  C:029AH         LINE#         82
+  C:02A2H         LINE#         83
+  C:02AAH         LINE#         84
+  C:02B2H         LINE#         85
+  C:02BAH         LINE#         86
+  C:02C2H         LINE#         87
+  C:02CDH         LINE#         88
+  C:02CDH         LINE#         89
+  C:02D2H         LINE#         90
+  -------         ENDPROC       COUNTER_SET_MANUAL
+  -------         PROC          MAIN
+  -------         DO            
+  D:000EH         SYMBOL        key
+  -------         ENDDO         
+  C:02D7H         LINE#         94
+  C:02D7H         LINE#         95
+  C:02D7H         LINE#         96
+  C:02DAH         LINE#         97
+  C:02DAH         LINE#         98
+  C:02DAH         LINE#         99
+  C:02DFH         LINE#         102
+  C:02EBH         LINE#         103
+  C:02F6H         LINE#         104
+  C:0301H         LINE#         105
+  C:030AH         LINE#         108
+  C:031AH         LINE#         109
+  C:031AH         LINE#         110
+  C:031FH         LINE#         111
+  C:0324H         LINE#         112
+  C:0329H         LINE#         113
+  C:032EH         LINE#         114
+  C:0331H         LINE#         115
+  C:0331H         LINE#         116
+  C:0336H         LINE#         117
+  -------         ENDPROC       MAIN
+  -------         ENDMOD        MAIN
+
+  -------         MODULE        DELAY
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  C:040EH         PUBLIC        _delay
+  -------         PROC          _DELAY
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  12/14/2025  17:40:28  PAGE 5
+
+
+  D:0006H         SYMBOL        xms
+  -------         DO            
+  D:0005H         SYMBOL        i
+  D:0004H         SYMBOL        j
+  -------         ENDDO         
+  C:040EH         LINE#         1
+  C:040EH         LINE#         2
+  C:040EH         LINE#         4
+  C:0412H         LINE#         5
+  C:0412H         LINE#         6
+  C:0414H         LINE#         7
+  C:0416H         LINE#         9
+  C:0416H         LINE#         10
+  C:0418H         LINE#         11
+  C:041AH         LINE#         12
+  C:041FH         LINE#         13
+  C:0421H         LINE#         15
+  -------         ENDPROC       _DELAY
+  -------         ENDMOD        DELAY
+
+  -------         MODULE        MATRIXKEY
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  D:00B0H         PUBLIC        P3
+  B:00B0H.0       PUBLIC        P3_0
+  B:00B0H.1       PUBLIC        P3_1
+  B:00B0H.2       PUBLIC        P3_2
+  B:00B0H.3       PUBLIC        P3_3
+  B:00B0H.4       PUBLIC        P3_4
+  B:00B0H.5       PUBLIC        P3_5
+  B:00B0H.6       PUBLIC        P3_6
+  B:00B0H.7       PUBLIC        P3_7
+  C:0003H         PUBLIC        MatrixKey
+  -------         PROC          MATRIXKEY
+  -------         DO            
+  D:0013H         SYMBOL        KeyNumber
+  -------         ENDDO         
+  C:0003H         LINE#         3
+  C:0003H         LINE#         4
+  C:0003H         LINE#         5
+  C:0006H         LINE#         8
+  C:0009H         LINE#         9
+  C:000BH         LINE#         10
+  C:001EH         LINE#         11
+  C:0031H         LINE#         12
+  C:0044H         LINE#         13
+  C:0057H         LINE#         16
+  C:005AH         LINE#         17
+  C:005CH         LINE#         18
+  C:006FH         LINE#         19
+  C:0082H         LINE#         20
+  C:0095H         LINE#         21
+  C:00A8H         LINE#         24
+  C:00ABH         LINE#         25
+  C:00ADH         LINE#         26
+  C:00C0H         LINE#         27
+  C:00D3H         LINE#         28
+  C:00E6H         LINE#         29
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  12/14/2025  17:40:28  PAGE 6
+
+
+  C:00F9H         LINE#         32
+  C:00FCH         LINE#         33
+  C:00FEH         LINE#         34
+  C:0111H         LINE#         35
+  C:0124H         LINE#         36
+  C:0137H         LINE#         37
+  C:014AH         LINE#         39
+  C:014CH         LINE#         40
+  -------         ENDPROC       MATRIXKEY
+  -------         ENDMOD        MATRIXKEY
+
+  -------         MODULE        ?C?SIDIV
+  C:01D9H         PUBLIC        ?C?SIDIV
+  -------         ENDMOD        ?C?SIDIV
+
+  -------         MODULE        ?C?UIDIV
+  C:020FH         PUBLIC        ?C?UIDIV
+  -------         ENDMOD        ?C?UIDIV
+
+Program Size: data=21.0 xdata=0 code=1077
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

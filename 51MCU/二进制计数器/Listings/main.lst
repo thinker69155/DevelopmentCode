@@ -1,0 +1,146 @@
+C51 COMPILER V9.59.0.0   MAIN                                                              12/14/2025 17:40:28 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: D:\software\keil\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listing
+                    -s\main.lst) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include <REGX52.H>
+   2          #include "delay.h"
+   3          #include "MatrixKey.h"
+   4          
+   5          /// 全局变量 ////////////////////////////////////////////////////////////
+   6          unsigned char count1=0;    
+   7          unsigned char count2_1=0;  //高位计数器
+   8          unsigned char count2_2=0;  //低位计数器
+   9          unsigned char bits1 = 4;   // 计数器1位数（默认4位）
+  10          unsigned char bits2 = 4;   // 计数器2位数（默认4位）
+  11          unsigned char func_choice = 0;
+  12          
+  13          /// 拼接双计数器为8位////////////////////////////////////////////////////////////
+  14          unsigned char concatenate_bit() 
+  15          {
+  16   1          unsigned char val1 = count2_1 % (1 << bits1);  
+  17   1          unsigned char val2 = count2_2 % (1 << bits2);  
+  18   1          return (val1 << bits2) | val2;  // 拼接：val1（高位）+ val2（低位）
+  19   1      }
+  20          
+  21          /// led八位显示 ////////////////////////////////
+  22          void counter_single()
+  23          {
+  24   1          unsigned char key=MatrixKey();  
+  25   1          if(key == 12)  // 按键12让count1++
+  26   1          {
+  27   2              count1++;
+  28   2              count1 %= 256;
+  29   2              delay(20);  // 按键防抖
+  30   2          }
+  31   1          P1=count1;  
+  32   1          delay(50); 
+  33   1      }
+  34          
+  35          /// led八位显示反转 ////////////////////////////
+  36          void counter_twist()
+  37          {
+  38   1          unsigned char count1_twist = 0;
+  39   1          unsigned char temp = count1;
+  40   1          int i = 0;
+  41   1          
+  42   1          // 检测按键：按键12才让count1++
+  43   1          unsigned char key=MatrixKey();
+  44   1          if(key == 12)
+  45   1          {
+  46   2              count1++;
+  47   2              count1 %= 256;
+  48   2              delay(20);
+  49   2          }
+  50   1          
+  51   1          // 反转
+  52   1          for( i = 0; i < 8; i++) 
+  53   1          {
+  54   2              count1_twist <<= 1;
+C51 COMPILER V9.59.0.0   MAIN                                                              12/14/2025 17:40:28 PAGE 2   
+
+  55   2              count1_twist |= (temp & 1);  
+  56   2              temp >>= 1;
+  57   2          }
+  58   1          P1 = count1_twist;  
+  59   1          delay(50);
+  60   1      }
+  61          
+  62          /// led两个四位显示//////////////////////////////////////////////////
+  63          void counter_double()
+  64          {
+  65   1          unsigned char key=MatrixKey();
+  66   1          switch(key)
+  67   1          {
+  68   2              case 10:count2_1++;delay(20);break;  
+  69   2              case 11:count2_2++;delay(20);break;
+  70   2          }
+  71   1          P1=concatenate_bit();
+  72   1          delay(50);
+  73   1      }
+  74          
+  75          /// led自设位数显示 //////////////////////////////////////////////////
+  76          void counter_set_manual()
+  77          {
+  78   1          unsigned char key=MatrixKey();
+  79   1          switch(key)
+  80   1          {
+  81   2              case 14:bits1=1;bits2=7;delay(20);break;
+  82   2              case 15:bits1=2;bits2=6;delay(20);break;
+  83   2              case 16:bits1=3;bits2=5;delay(20);break;
+  84   2              case 17:bits1=4;bits2=4;delay(20);break;
+  85   2              case 18:bits1=5;bits2=3;delay(20);break;
+  86   2              case 19:bits1=6;bits2=2;delay(20);break;
+  87   2              case 20:bits1=7;bits2=1;delay(20);break;
+  88   2          }
+  89   1          P1=concatenate_bit();
+  90   1          delay(50);
+  91   1      }
+  92          
+  93          /// 主函数 //////////////////////////////////////////////////////////
+  94          void main()
+  95          {
+  96   1          P1=0xff;
+  97   1          while(1)
+  98   1          {
+  99   2              unsigned char key=MatrixKey();
+ 100   2              
+ 101   2              // 检测功能切换键
+ 102   2              if(key == 6)      func_choice = 1;  // 切换到single
+ 103   2              else if(key == 7) func_choice = 2;  // 切换到twist
+ 104   2              else if(key == 8) func_choice = 3;  // 切换到double
+ 105   2              else if(key == 9) func_choice = 4;  // 切换到set_manual
+ 106   2              
+ 107   2              // 持续执行对应功能
+ 108   2              switch (func_choice)
+ 109   2              {
+ 110   3                  case 1: counter_single();  break;
+ 111   3                  case 2: counter_twist();   break;
+ 112   3                  case 3: counter_double();  break;
+ 113   3                  case 4: counter_set_manual(); break;
+ 114   3                  default: P1=0xff; break;  
+ 115   3              }
+ 116   2              delay(20);
+C51 COMPILER V9.59.0.0   MAIN                                                              12/14/2025 17:40:28 PAGE 3   
+
+ 117   2          } 
+ 118   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    426    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      6       5
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

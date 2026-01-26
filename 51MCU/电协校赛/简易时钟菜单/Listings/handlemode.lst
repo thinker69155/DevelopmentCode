@@ -1,0 +1,298 @@
+C51 COMPILER V9.59.0.0   HANDLEMODE                                                        11/22/2025 22:06:12 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE HANDLEMODE
+OBJECT MODULE PLACED IN .\Objects\handlemode.obj
+COMPILER INVOKED BY: D:\software\keil\C51\BIN\C51.EXE handlemode.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\L
+                    -istings\handlemode.lst) TABS(2) OBJECT(.\Objects\handlemode.obj)
+
+line level    source
+
+   1          #include <REGX52.H>
+   2          #include "lcd1602.h"
+   3          #include "key.h"
+   4          #include <intrins.h>
+   5          #include "globalvars.h"
+   6          #include "delay.h"
+   7          #include "show.h"
+   8          #include "handlemode.h"
+   9          #include "modeswitch.h"
+  10          // 日历模式处理
+  11          void handle_calendar_mode(unsigned char key) 
+  12          {
+  13   1          show_calendar();
+  14   1          
+  15   1          if(!set_flag) 
+  16   1          {
+  17   2              if(key == 1) 
+  18   2              {
+  19   3                  mode_switch();
+  20   3              } else if(key == 2) 
+  21   2              {
+  22   3                  set_flag = 1;
+  23   3              }
+  24   2          } 
+  25   1          else 
+  26   1          {
+  27   2              if(key == 2) 
+  28   2              {
+  29   3                  select_pos = (select_pos + 1) % 6;
+  30   3              } 
+  31   2              else if(key == 3) 
+  32   2              {
+  33   3                  calendar[select_pos]++;
+  34   3                  if(select_pos == 1 && calendar[1] > 12) calendar[1] = 1;
+  35   3                  if(select_pos == 2 && calendar[2] > 31) calendar[2] = 1;
+  36   3                  if(select_pos == 3 && calendar[3] > 23) calendar[3] = 0;
+  37   3                  if(select_pos >= 4 && calendar[select_pos] > 59) calendar[select_pos] = 0;
+  38   3              } 
+  39   2              else if(key == 4)
+  40   2              {
+  41   3                  calendar[select_pos]--;
+  42   3                  if(select_pos == 1 && calendar[1] < 1) calendar[1] = 12;
+  43   3                  if(select_pos == 2 && calendar[2] < 1) calendar[2] = 31;
+  44   3                  if(select_pos == 3 && calendar[3] < 0) calendar[3] = 23;
+  45   3                  if(select_pos >= 4 && calendar[select_pos] < 0) calendar[select_pos] = 59;
+  46   3              } 
+  47   2              else if(key == 1) 
+  48   2              {
+  49   3                  set_flag = 0;
+  50   3                  select_pos = 0;
+  51   3                  LCD_WriteCommand(0x01);
+  52   3                  show_calendar();
+  53   3              }
+  54   2          }
+C51 COMPILER V9.59.0.0   HANDLEMODE                                                        11/22/2025 22:06:12 PAGE 2   
+
+  55   1      }
+  56          //***************************************************************************
+  57          
+  58          // 倒计时模式处理
+  59          void handle_countdown_mode(unsigned char key) 
+  60          {
+  61   1          show_countdown();
+  62   1          
+  63   1          if(set_flag) 
+  64   1          {
+  65   2              if(key == 1) 
+  66   2              {
+  67   3                  set_flag = 0;
+  68   3                  select_pos = 0;
+  69   3              } 
+  70   2              else if(key == 2) 
+  71   2              {
+  72   3                  select_pos = (select_pos + 1) % 3;
+  73   3              } 
+  74   2              else if(key == 3) 
+  75   2              {
+  76   3                  countdown[select_pos]++;
+  77   3                  if(select_pos == 0 && countdown[0] > 23) countdown[0] = 0;
+  78   3                  if(select_pos >= 1 && countdown[select_pos] > 59) countdown[select_pos] = 0;
+  79   3              } 
+  80   2              else if(key == 4) 
+  81   2              {
+  82   3                  countdown[select_pos]--;
+  83   3                  if(select_pos == 0 && countdown[0] < 0) countdown[0] = 23;
+  84   3                  if(select_pos >= 1 && countdown[select_pos] < 0) countdown[select_pos] = 59;
+  85   3              }
+  86   2          } 
+  87   1          else 
+  88   1          {
+  89   2              if(key == 1) 
+  90   2              {
+  91   3                  mode_switch();
+  92   3              } 
+  93   2              else if(key == 2)
+  94   2              {
+  95   3                  if(countdown[0] > 0 || countdown[1] > 0 || countdown[2] > 0) 
+  96   3                  {
+  97   4                      countdown_running = !countdown_running;
+  98   4                  }
+  99   3              } 
+ 100   2              else if(key == 3) 
+ 101   2              {
+ 102   3                  set_flag = 1;
+ 103   3                  select_pos = 0;
+ 104   3              }
+ 105   2          }
+ 106   1      }
+ 107          //***************************************************************************
+ 108          
+ 109          // 秒表模式处理（核心：1ms中断直接驱动，无换算误差）
+ 110          // 秒表模式处理（核心：1ms中断直接驱动，无换算误差）
+ 111          void handle_stopwatch_mode(unsigned char key) 
+ 112          {
+ 113   1          static unsigned int base_ms = 0;       // 基准毫秒数（启动时记录）
+ 114   1          static unsigned char refresh_cnt = 0;  // 刷新控制（每10ms刷新一次）
+ 115   1          static bit save_prompt_flag = 0;       // 保存成功提示标志
+ 116   1          static unsigned int prompt_cnt = 0;    // 提示计数（控制显示时长）
+C51 COMPILER V9.59.0.0   HANDLEMODE                                                        11/22/2025 22:06:12 PAGE 3   
+
+ 117   1      
+ 118   1          // 1ms中断触发，更新毫秒数
+ 119   1          if (flag_1ms)   
+ 120   1          {
+ 121   2              flag_1ms = 0;  // 立即清零，防止重复处理
+ 122   2              
+ 123   2              if (stopwatch_running) 
+ 124   2              {
+ 125   3                  // 当前毫秒 = 总毫秒 - 基准毫秒
+ 126   3                  stopwatch[3] = ms_cnt - base_ms;
+ 127   3      
+ 128   3                  // 毫秒进位到秒（1000ms = 1秒）
+ 129   3                  if (stopwatch[3] >= 1000) 
+ 130   3                  {
+ 131   4                      stopwatch[3] -= 1000;  // 剩余毫秒
+ 132   4                      base_ms += 1000;       // 基准同步
+ 133   4                      stopwatch[2]++;        // 秒+1
+ 134   4      
+ 135   4                      // 秒进位到分
+ 136   4                      if (stopwatch[2] >= 60) 
+ 137   4                      {
+ 138   5                          stopwatch[2] = 0;
+ 139   5                          stopwatch[1]++;    // 分+1
+ 140   5      
+ 141   5                          // 分进位到时
+ 142   5                          if (stopwatch[1] >= 60) 
+ 143   5                          {
+ 144   6                              stopwatch[1] = 0;
+ 145   6                              stopwatch[0]++;  // 时+1
+ 146   6                              if (stopwatch[0] >= 24) stopwatch[0] = 0;
+ 147   6                          }
+ 148   5                      }
+ 149   4                  }
+ 150   3              }
+ 151   2      
+ 152   2              // 保存提示显示控制（显示500ms后自动消失）
+ 153   2              if (save_prompt_flag) 
+ 154   2              {
+ 155   3                  prompt_cnt++;
+ 156   3                  if (prompt_cnt >= 500) 
+ 157   3                  {  // 500ms后关闭提示
+ 158   4                      save_prompt_flag = 0;
+ 159   4                      prompt_cnt = 0;
+ 160   4                  }
+ 161   3              }
+ 162   2      
+ 163   2              // 每10ms刷新一次显示（平衡精度与视觉）
+ 164   2              refresh_cnt++;
+ 165   2              if (refresh_cnt >= 10) 
+ 166   2              {
+ 167   3                  refresh_cnt = 0;
+ 168   3                  show_stopwatch();
+ 169   3                  // 显示保存成功提示（叠加在秒表显示上）
+ 170   3                  if (save_prompt_flag) 
+ 171   3                  {
+ 172   4                      LCD_ShowString(2, 1, "Save OK!");
+ 173   4                  } 
+ 174   3                  else
+ 175   3                  {
+ 176   4                      LCD_ShowString(2, 1, "        ");  // 清除提示
+ 177   4                  }
+ 178   3              }
+C51 COMPILER V9.59.0.0   HANDLEMODE                                                        11/22/2025 22:06:12 PAGE 4   
+
+ 179   2          }
+ 180   1      
+ 181   1          // 按键操作时立即刷新
+ 182   1          if (key != 0) 
+ 183   1          {
+ 184   2              show_stopwatch();
+ 185   2          }
+ 186   1      
+ 187   1          // 按键处理
+ 188   1          switch(key)   
+ 189   1          {
+ 190   2              case 1:  // K1切换模式
+ 191   2                  mode_switch();
+ 192   2                  save_prompt_flag = 0;  // 切换模式时清除提示
+ 193   2                  prompt_cnt = 0;
+ 194   2                  break;
+ 195   2              case 2:  // K2启动/暂停
+ 196   2                  if (!stopwatch_running) 
+ 197   2                  {
+ 198   3                      base_ms = ms_cnt;       // 记录当前总毫秒
+ 199   3                      stopwatch[3] = 0;       // 从0开始计数
+ 200   3                      stopwatch_running = 1;
+ 201   3                  } 
+ 202   2                  else 
+ 203   2                  {
+ 204   3                      stopwatch_running = 0;  // 暂停
+ 205   3                  }
+ 206   2                  save_prompt_flag = 0;  // 操作时清除提示
+ 207   2                  prompt_cnt = 0;
+ 208   2                  break;
+ 209   2              case 3:  // K3保存记录（修改：允许计时期间保存，循环覆盖）
+ 210   2                  // 计时中或暂停时都可保存（根据需求调整，这里保留两种场景）
+ 211   2                  {
+ 212   3                      // 保存当前秒表时间（时/分/秒，忽略毫秒）
+ 213   3                      records[record_idx][0] = stopwatch[0];
+ 214   3                      records[record_idx][1] = stopwatch[1];
+ 215   3                      records[record_idx][2] = stopwatch[2];
+ 216   3      
+ 217   3                      // 更新记录数和下次保存索引（循环覆盖逻辑）
+ 218   3                      if (record_cnt < 3)
+ 219   3                      {
+ 220   4                          record_cnt++;  // 未存满3条，记录数+1
+ 221   4                      }
+ 222   3                      record_idx = (record_idx + 1) % 3;  // 索引循环（0→1→2→0）
+ 223   3      
+ 224   3                      // 显示保存成功提示
+ 225   3                      save_prompt_flag = 1;
+ 226   3                      prompt_cnt = 0;
+ 227   3                  }
+ 228   2                  break;
+ 229   2              case 4:  // K4清零
+ 230   2                  if (!stopwatch_running)
+ 231   2                  {
+ 232   3                      stopwatch[0] = stopwatch[1] = stopwatch[2] = 0;
+ 233   3                      stopwatch[3] = 0;
+ 234   3                      base_ms = ms_cnt;  // 基准同步当前时间
+ 235   3                  }
+ 236   2                  save_prompt_flag = 0;  // 操作时清除提示
+ 237   2                  prompt_cnt = 0;
+ 238   2                  break;
+ 239   2          }
+ 240   1      }
+C51 COMPILER V9.59.0.0   HANDLEMODE                                                        11/22/2025 22:06:12 PAGE 5   
+
+ 241          //***************************************************************************
+ 242          
+ 243          // 查看记录模式处理
+ 244          // 查看记录模式处理（修复闪烁：仅按键时刷新显示）
+ 245          void handle_view_record_mode(unsigned char key) 
+ 246          {
+ 247   1          // 仅在有按键时才处理并刷新显示，无按键时不做任何操作
+ 248   1          if(key == 1) 
+ 249   1          {
+ 250   2              // 返回上一模式，清屏并切换
+ 251   2              LCD_WriteCommand(0x01);
+ 252   2              mode_switch();
+ 253   2          } 
+ 254   1          else if(key == 3 && record_cnt > 0)  // 修改：record_cnt>0即可切换
+ 255   1          {
+ 256   2              // 切换下一条记录，更新后刷新
+ 257   2              view_idx = (view_idx + 1) % record_cnt;
+ 258   2              show_records();  // 仅切换时刷新
+ 259   2          } 
+ 260   1          else if(key == 4 && record_cnt > 0)  // 修改：record_cnt>0即可切换
+ 261   1          {
+ 262   2              // 切换上一条记录，更新后刷新
+ 263   2              view_idx = (view_idx + record_cnt - 1) % record_cnt;
+ 264   2              show_records();  // 仅切换时刷新
+ 265   2          }
+ 266   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   1082    ----
+   CONSTANT SIZE    =     18    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      5       4
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =      1    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

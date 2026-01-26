@@ -1,0 +1,104 @@
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                    11/06/2025  18:34:43  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V6.22.2.0, INVOKED BY:
+D:\SOFTWARE\KEIL\C51\BIN\BL51.EXE .\Objects\main.obj TO .\Objects\project PRINT (.\Listings\project.m51) RAMSIZE (256)
+
+
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  .\Objects\main.obj (MAIN)
+  D:\SOFTWARE\KEIL\C51\LIB\C51S.LIB (?C_STARTUP)
+
+
+LINK MAP OF MODULE:  .\Objects\project (MAIN)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            IDATA   0008H     0001H     UNIT         ?STACK
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+            CODE    0003H     004FH     UNIT         ?PR?MAIN?MAIN
+            CODE    0052H     000CH     UNIT         ?C_C51STARTUP
+
+
+
+OVERLAY MAP OF MODULE:   .\Objects\project (MAIN)
+
+
+SEGMENT
+  +--> CALLED SEGMENT
+---------------------
+?C_C51STARTUP
+  +--> ?PR?MAIN?MAIN
+
+
+
+SYMBOL TABLE OF MODULE:  .\Objects\project (MAIN)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        MAIN
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  D:00B0H         PUBLIC        P3
+  B:00B0H.6       PUBLIC        R_CLK
+  B:00B0H.5       PUBLIC        S_CLK
+  C:0003H         PUBLIC        main
+  B:00B0H.4       PUBLIC        DIO
+  -------         PROC          MAIN
+  -------         DO            
+  D:0006H         SYMBOL        i
+  D:0007H         SYMBOL        dat
+  -------         ENDDO         
+  C:0003H         LINE#         6
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  11/06/2025  18:34:43  PAGE 2
+
+
+  C:0003H         LINE#         7
+  C:0003H         LINE#         10
+  C:0005H         LINE#         11
+  C:0011H         LINE#         12
+  C:0011H         LINE#         13
+  C:0013H         LINE#         14
+  C:0015H         LINE#         15
+  C:001AH         LINE#         16
+  C:001AH         LINE#         17
+  C:001CH         LINE#         18
+  C:001EH         LINE#         20
+  C:001EH         LINE#         21
+  C:0020H         LINE#         22
+  C:0020H         LINE#         23
+  C:0024H         LINE#         24
+  C:0026H         LINE#         25
+  C:0029H         LINE#         26
+  C:002BH         LINE#         27
+  C:0037H         LINE#         28
+  C:0037H         LINE#         29
+  C:0039H         LINE#         30
+  C:003BH         LINE#         31
+  C:003FH         LINE#         32
+  C:003FH         LINE#         33
+  C:0041H         LINE#         34
+  C:0043H         LINE#         36
+  C:0043H         LINE#         37
+  C:0045H         LINE#         38
+  C:0045H         LINE#         39
+  C:0049H         LINE#         40
+  C:004BH         LINE#         41
+  C:004EH         LINE#         42
+  C:0050H         LINE#         43
+  C:0050H         LINE#         44
+  C:0050H         LINE#         46
+  -------         ENDPROC       MAIN
+  -------         ENDMOD        MAIN
+
+Program Size: data=9.0 xdata=0 code=94
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,380 @@
+C51 COMPILER V9.59.0.0   COMPUTE                                                           11/29/2025 15:30:05 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE COMPUTE
+OBJECT MODULE PLACED IN .\Objects\compute.obj
+COMPILER INVOKED BY: D:\software\keil\C51\BIN\C51.EXE compute.c OPTIMIZE(8,SPEED) BROWSE INCDIR(..\´´¿ÍÐ£Èü;.\Listings) 
+                    -DEBUG OBJECTEXTEND PRINT(.\Listings\compute.lst) TABS(2) OBJECT(.\Objects\compute.obj)
+
+line level    source
+
+   1          #include "calculator.h"
+*** ERROR C202 IN LINE 38 OF calculator.h: 'P1': undefined identifier
+*** ERROR C202 IN LINE 39 OF calculator.h: 'P1': undefined identifier
+*** ERROR C202 IN LINE 40 OF calculator.h: 'P1': undefined identifier
+*** ERROR C202 IN LINE 41 OF calculator.h: 'P1': undefined identifier
+*** ERROR C202 IN LINE 42 OF calculator.h: 'P1': undefined identifier
+*** ERROR C202 IN LINE 43 OF calculator.h: 'P1': undefined identifier
+*** ERROR C202 IN LINE 44 OF calculator.h: 'P1': undefined identifier
+*** ERROR C202 IN LINE 45 OF calculator.h: 'P1': undefined identifier
+*** ERROR C202 IN LINE 47 OF calculator.h: 'P3': undefined identifier
+*** ERROR C202 IN LINE 48 OF calculator.h: 'P3': undefined identifier
+*** ERROR C202 IN LINE 49 OF calculator.h: 'P3': undefined identifier
+*** ERROR C202 IN LINE 50 OF calculator.h: 'P3': undefined identifier
+*** ERROR C202 IN LINE 53 OF calculator.h: 'P3': undefined identifier
+*** ERROR C202 IN LINE 54 OF calculator.h: 'P3': undefined identifier
+*** ERROR C202 IN LINE 55 OF calculator.h: 'P3': undefined identifier
+   2          #include "delay.h"
+   3          #include "LCD1602.h"
+   4          #include "MatrixKey.h"
+   5          // ±í´ïÊ½¼ÆËãÏà¹Øº¯Êý£¨¼ò»¯°æ£¬±£³ÖÔ­¹¦ÄÜ£©
+   6          double calc_op(double a, double b, char op) 
+   7          {
+   8   1          switch(op) 
+   9   1          {
+  10   2              case '+': return a + b;
+  11   2              case '-': return a - b;
+  12   2              case '*': return a * b;
+  13   2              case '/': return (b != 0) ? (a / b) : 0;
+  14   2              default: return 0;
+  15   2          }
+  16   1      }
+  17          
+  18          void calc_expression(void) 
+  19          {
+  20   1          char expr[32] = {0};
+  21   1          unsigned char i, j=0;
+  22   1          for(i=0; i<disp_len; i++) 
+  23   1          {
+  24   2              if(disp_buf[i] == '¡Á') expr[j++] = '*';
+*** ERROR C101 IN LINE 24 OF compute.c: ''¡': invalid character constant
+*** ERROR C101 IN LINE 24 OF compute.c: '')': invalid character constant
+*** ERROR C141 IN LINE 24 OF compute.c: syntax error near '')', expected ','
+*** ERROR C141 IN LINE 24 OF compute.c: syntax error near 'expr', expected ';'
+  25   2              else if(disp_buf[i] == '¡Â') expr[j++] = '/';
+*** ERROR C141 IN LINE 25 OF compute.c: syntax error near 'else', expected '__asm'
+*** ERROR C101 IN LINE 25 OF compute.c: ''¡': invalid character constant
+*** ERROR C101 IN LINE 25 OF compute.c: '')': invalid character constant
+*** ERROR C141 IN LINE 25 OF compute.c: syntax error near '')', expected ','
+*** ERROR C141 IN LINE 25 OF compute.c: syntax error near 'expr', expected ';'
+  26   2              else expr[j++] = disp_buf[i];
+*** ERROR C141 IN LINE 26 OF compute.c: syntax error near 'else', expected '__asm'
+  27   2          }
+  28   1          // ±í´ïÊ½¼ÆËã
+  29   1          double num_stack[16], op_stack[16];
+C51 COMPILER V9.59.0.0   COMPUTE                                                           11/29/2025 15:30:05 PAGE 2   
+
+*** ERROR C141 IN LINE 29 OF compute.c: syntax error near 'double', expected '__asm'
+*** ERROR C202 IN LINE 29 OF compute.c: 'num_stack': undefined identifier
+  30   1          unsigned char num_idx=0, op_idx=0;
+*** ERROR C141 IN LINE 30 OF compute.c: syntax error near 'unsigned', expected '__asm'
+*** ERROR C202 IN LINE 30 OF compute.c: 'num_idx': undefined identifier
+  31   1          double num=0, sign=1;
+*** ERROR C141 IN LINE 31 OF compute.c: syntax error near 'double', expected '__asm'
+*** ERROR C202 IN LINE 31 OF compute.c: 'num': undefined identifier
+  32   1          char *p = expr;
+*** ERROR C141 IN LINE 32 OF compute.c: syntax error near 'char', expected '__asm'
+*** ERROR C202 IN LINE 32 OF compute.c: 'p': undefined identifier
+  33   1          while(*p != '\0') 
+*** ERROR C202 IN LINE 33 OF compute.c: 'p': undefined identifier
+  34   1          {
+  35   2              if(*p >= '0' && *p <= '9') 
+*** ERROR C202 IN LINE 35 OF compute.c: 'p': undefined identifier
+  36   2              {
+  37   3                  num = num*10 + (*p-'0');
+*** ERROR C202 IN LINE 37 OF compute.c: 'num': undefined identifier
+  38   3                  p++;
+*** ERROR C202 IN LINE 38 OF compute.c: 'p': undefined identifier
+  39   3                  if(*p < '0' || *p > '9') 
+*** ERROR C202 IN LINE 39 OF compute.c: 'p': undefined identifier
+  40   3                  {
+  41   4                      num_stack[num_idx++] = num*sign;
+*** ERROR C202 IN LINE 41 OF compute.c: 'num_idx': undefined identifier
+  42   4                      num=0; sign=1;
+*** ERROR C202 IN LINE 42 OF compute.c: 'num': undefined identifier
+*** ERROR C202 IN LINE 42 OF compute.c: 'sign': undefined identifier
+  43   4                  }
+  44   3              } 
+  45   2              else if(*p == '(') { op_stack[op_idx++] = *p; p++; }
+*** ERROR C202 IN LINE 45 OF compute.c: 'p': undefined identifier
+*** ERROR C202 IN LINE 45 OF compute.c: 'op_idx': undefined identifier
+*** ERROR C202 IN LINE 45 OF compute.c: 'p': undefined identifier
+  46   2              else if(*p == ')') 
+*** ERROR C202 IN LINE 46 OF compute.c: 'p': undefined identifier
+  47   2              {
+  48   3                  while(op_idx>0 && op_stack[op_idx-1] != '(') 
+*** ERROR C202 IN LINE 48 OF compute.c: 'op_idx': undefined identifier
+  49   3                  {
+  50   4                      double b=num_stack[--num_idx], a=num_stack[--num_idx];
+*** ERROR C202 IN LINE 50 OF compute.c: 'num_idx': undefined identifier
+*** ERROR C202 IN LINE 50 OF compute.c: 'num_idx': undefined identifier
+  51   4                      char op=op_stack[--op_idx];
+*** ERROR C202 IN LINE 51 OF compute.c: 'op_idx': undefined identifier
+  52   4                      num_stack[num_idx++] = calc_op(a, b, op);
+*** ERROR C202 IN LINE 52 OF compute.c: 'num_idx': undefined identifier
+  53   4                  }
+  54   3                  op_idx--; p++;
+*** ERROR C202 IN LINE 54 OF compute.c: 'op_idx': undefined identifier
+*** ERROR C202 IN LINE 54 OF compute.c: 'p': undefined identifier
+  55   3              } 
+  56   2              else if(*p == '+' || *p == '-') 
+*** ERROR C202 IN LINE 56 OF compute.c: 'p': undefined identifier
+  57   2              {
+  58   3                  while(op_idx>0 && op_stack[op_idx-1] != '(') 
+*** ERROR C202 IN LINE 58 OF compute.c: 'op_idx': undefined identifier
+  59   3                  {
+  60   4                      double b=num_stack[--num_idx], a=num_stack[--num_idx];
+*** ERROR C202 IN LINE 60 OF compute.c: 'num_idx': undefined identifier
+*** ERROR C202 IN LINE 60 OF compute.c: 'num_idx': undefined identifier
+C51 COMPILER V9.59.0.0   COMPUTE                                                           11/29/2025 15:30:05 PAGE 3   
+
+  61   4                      char op=op_stack[--op_idx];
+*** ERROR C202 IN LINE 61 OF compute.c: 'op_idx': undefined identifier
+  62   4                      num_stack[num_idx++] = calc_op(a, b, op);
+*** ERROR C202 IN LINE 62 OF compute.c: 'num_idx': undefined identifier
+  63   4                  }
+  64   3                  op_stack[op_idx++] = *p; p++;
+*** ERROR C202 IN LINE 64 OF compute.c: 'op_idx': undefined identifier
+*** ERROR C202 IN LINE 64 OF compute.c: 'p': undefined identifier
+  65   3              } 
+  66   2              else if(*p == '*' || *p == '/') 
+*** ERROR C202 IN LINE 66 OF compute.c: 'p': undefined identifier
+  67   2              {
+  68   3                  while(op_idx>0 && (op_stack[op_idx-1] == '*' || op_stack[op_idx-1] == '/')) 
+*** ERROR C202 IN LINE 68 OF compute.c: 'op_idx': undefined identifier
+  69   3                  {
+  70   4                      double b=num_stack[--num_idx], a=num_stack[--num_idx];
+*** ERROR C202 IN LINE 70 OF compute.c: 'num_idx': undefined identifier
+*** ERROR C202 IN LINE 70 OF compute.c: 'num_idx': undefined identifier
+  71   4                      char op=op_stack[--op_idx];
+*** ERROR C202 IN LINE 71 OF compute.c: 'op_idx': undefined identifier
+  72   4                      num_stack[num_idx++] = calc_op(a, b, op);
+*** ERROR C202 IN LINE 72 OF compute.c: 'num_idx': undefined identifier
+  73   4                  }
+  74   3                  op_stack[op_idx++] = *p; p++;
+*** ERROR C202 IN LINE 74 OF compute.c: 'op_idx': undefined identifier
+*** ERROR C202 IN LINE 74 OF compute.c: 'p': undefined identifier
+  75   3              } else p++;
+*** ERROR C202 IN LINE 75 OF compute.c: 'p': undefined identifier
+  76   2          }
+  77   1          while(op_idx>0) 
+*** ERROR C202 IN LINE 77 OF compute.c: 'op_idx': undefined identifier
+  78   1          {
+  79   2              double b=num_stack[--num_idx], a=num_stack[--num_idx];
+*** ERROR C202 IN LINE 79 OF compute.c: 'num_idx': undefined identifier
+*** ERROR C202 IN LINE 79 OF compute.c: 'num_idx': undefined identifier
+  80   2              char op=op_stack[--op_idx];
+*** ERROR C202 IN LINE 80 OF compute.c: 'op_idx': undefined identifier
+  81   2              num_stack[num_idx++] = calc_op(a, b, op);
+*** ERROR C202 IN LINE 81 OF compute.c: 'num_idx': undefined identifier
+  82   2          }
+  83   1          result = num_stack[0];
+*** ERROR C202 IN LINE 83 OF compute.c: 'num_stack': undefined identifier
+  84   1      }
+  85          
+  86          // ¿ÆÑ§¹¦ÄÜ´¦Àíº¯Êý
+  87          void sin_func(double angle) 
+  88          {
+  89   1          result = sin(angle * 3.1415926 / 180);
+  90   1          reset_calc();
+  91   1          sprintf((char*)disp_buf, "sin(%.1f)=%.2f", angle, result);
+  92   1          disp_len = strlen((char*)disp_buf);
+  93   1          flag_eq = 1;
+  94   1      }
+  95          
+  96          void sq_func(double val) 
+  97          {
+  98   1          result = val * val;
+  99   1          reset_calc();
+ 100   1          sprintf((char*)disp_buf, "%.1f2=%.2f", val, result);
+ 101   1          disp_len = strlen((char*)disp_buf);
+ 102   1          flag_eq = 1;
+ 103   1      }
+C51 COMPILER V9.59.0.0   COMPUTE                                                           11/29/2025 15:30:05 PAGE 4   
+
+ 104          
+ 105          void pow_func(double base) 
+ 106          {
+ 107   1          pow_base = base;
+ 108   1          reset_calc();
+ 109   1          sprintf((char*)disp_buf, "%.1f^?", pow_base);
+ 110   1          disp_len = strlen((char*)disp_buf);
+ 111   1          flag_pow = 1;
+ 112   1      }
+ 113          //////////////////////////////////////////////////////////////////////////////////////////////
+ 114          // Ö÷¼üÅÌ´¦Àíº¯Êý£¨µ÷ÓÃ×ÜÉ¨Ãèº¯Êý£¬»ñÈ¡±àºÅºó´¦Àí£©
+ 115          void key_process(unsigned char key_num) 
+ 116          {
+ 117   1          if(key_num == 0xFF) return;  // ÎÞ°´¼ü£¬Ö±½Ó·µ»Ø
+ 118   1      
+ 119   1          // ÏÈ´¦Àí×éºÏ¼ü£¨FN+Ä¿±ê¼ü£©
+ 120   1          // 1. FN + KEY_CLR ¡ú MC£¨¼ÇÒäÇå³ý£©
+ 121   1          is_fn_comb(KEY_CLR);
+ 122   1          if(fn_comb_flag == 1) 
+ 123   1          {
+ 124   2              memory = 0;
+ 125   2              lcd_show_str(0, 1, "MC: 0.00");
+ 126   2              delay_ms(500);
+ 127   2              // µÈ´ý°´¼üÊÍ·Å
+ 128   2              while(1) 
+ 129   2              { 
+ 130   3                is_fn_comb(KEY_CLR); 
+ 131   3                if(fn_comb_flag == 0) break; 
+ 132   3              }
+ 133   2              disp_update();
+ 134   2              return;
+ 135   2          }
+ 136   1      
+ 137   1          // 2. FN + KEY_M_PLUS ¡ú M-£¨¼ÇÒä¼õ£©
+ 138   1          is_fn_comb(KEY_M_PLUS);
+ 139   1          if(fn_comb_flag == 1) 
+ 140   1          {
+ 141   2              memory -= result;
+ 142   2              char mem_str[16];
+ 143   2              sprintf(mem_str, "M-: %.2f", memory);//?
+ 144   2              lcd_show_str(0, 1, mem_str);
+ 145   2              delay_ms(500);
+ 146   2              while(1) 
+ 147   2              { 
+ 148   3                is_fn_comb(KEY_M_PLUS); 
+ 149   3                if(fn_comb_flag == 0) break;
+ 150   3              }
+ 151   2              disp_update();
+ 152   2              return;
+ 153   2          }
+ 154   1      
+ 155   1          // 3. FN + KEY_ADD£¨¾ØÕó¼ü+£©¡ú sinº¯Êý
+ 156   1          is_fn_comb(KEY_ADD);
+ 157   1          if(fn_comb_flag == 1) 
+ 158   1          {
+ 159   2              if(disp_len > 0) 
+ 160   2              {         
+ 161   3                  double angle = atof((char*)disp_buf);
+ 162   3                  sin_func(angle);
+ 163   3              }
+ 164   2              while(1) 
+ 165   2              { 
+C51 COMPILER V9.59.0.0   COMPUTE                                                           11/29/2025 15:30:05 PAGE 5   
+
+ 166   3                is_fn_comb(KEY_ADD); 
+ 167   3                if(fn_comb_flag == 0) break; 
+ 168   3              }
+ 169   2              return;
+ 170   2          }
+ 171   1      
+ 172   1          // 4. FN + KEY_SUB£¨¾ØÕó¼ü-£©¡ú x2º¯Êý
+ 173   1          is_fn_comb(KEY_SUB);
+ 174   1          if(fn_comb_flag == 1) 
+ 175   1          {
+ 176   2              if(disp_len > 0) 
+ 177   2              {
+ 178   3                  double val = atof((char*)disp_buf);
+ 179   3                  sq_func(val);
+ 180   3              }
+ 181   2              while(1) { is_fn_comb(KEY_SUB); if(fn_comb_flag == 0) break; }
+ 182   2              return;
+ 183   2          }
+ 184   1      
+ 185   1          // 5. FN + KEY_MUL£¨¾ØÕó¼ü¡Á£©¡ú x?º¯Êý
+ 186   1          is_fn_comb(KEY_MUL);
+ 187   1          if(fn_comb_flag == 1) 
+ 188   1          {
+ 189   2              if(disp_len > 0) 
+ 190   2              {
+ 191   3                  double base = atof((char*)disp_buf);
+ 192   3                  pow_func(base);
+ 193   3              }
+ 194   2              while(1) { is_fn_comb(KEY_MUL); if(fn_comb_flag == 0) break; }
+ 195   2              return;
+ 196   2          }
+ 197   1      
+ 198   1          // ÔÙ´¦Àíµ¥¼ü
+ 199   1          if(flag_eq) 
+ 200   1          { reset_calc(); flag_eq = 0; }  // °´µÈºÅºóÇåÆÁÖØÊä
+ 201   1      
+ 202   1          // Êý×Ö¼ü£¨0~9£©
+ 203   1          if(key_num == KEY_0 || key_num == KEY_1 || key_num == KEY_2 || key_num == KEY_3 || 
+ 204   1             key_num == KEY_4 || key_num == KEY_5 || key_num == KEY_6 || key_num == KEY_7 || 
+ 205   1             key_num == KEY_8 || key_num == KEY_9) 
+ 206   1          {
+ 207   2              char num_char[] = {'0','1','2','3','4','5','6','7','8','9'};
+ 208   2              if(key_num == KEY_0) disp_buf[disp_len++] = num_char[0];
+ 209   2              else if(key_num == KEY_1) disp_buf[disp_len++] = num_char[1];
+ 210   2              else if(key_num == KEY_2) disp_buf[disp_len++] = num_char[2];
+ 211   2              else if(key_num == KEY_3) disp_buf[disp_len++] = num_char[3];
+ 212   2              else if(key_num == KEY_4) disp_buf[disp_len++] = num_char[4];
+ 213   2              else if(key_num == KEY_5) disp_buf[disp_len++] = num_char[5];
+ 214   2              else if(key_num == KEY_6) disp_buf[disp_len++] = num_char[6];
+ 215   2              else if(key_num == KEY_7) disp_buf[disp_len++] = num_char[7];
+ 216   2              else if(key_num == KEY_8) disp_buf[disp_len++] = num_char[8];
+ 217   2              else if(key_num == KEY_9) disp_buf[disp_len++] = num_char[9];
+ 218   2              disp_len = (disp_len > 15) ? 15 : disp_len;  // ÏÞÖÆÏÔÊ¾³¤¶È
+ 219   2          }
+ 220   1      
+ 221   1          // ÔËËã·û£¨+¡¢-¡¢¡Á¡¢¡Â£©
+ 222   1          else if(key_num == KEY_ADD) { if(disp_len < 15) disp_buf[disp_len++] = '+'; }
+ 223   1          else if(key_num == KEY_SUB) { if(disp_len < 15) disp_buf[disp_len++] = '-'; }
+ 224   1          else if(key_num == KEY_MUL) { if(disp_len < 15) disp_buf[disp_len++] = '¡Á'; }
+ 225   1          else if(key_num == KEY_DIV) { if(disp_len < 15) disp_buf[disp_len++] = '¡Â'; }
+ 226   1      
+ 227   1          // À¨ºÅ
+C51 COMPILER V9.59.0.0   COMPUTE                                                           11/29/2025 15:30:05 PAGE 6   
+
+ 228   1          else if(key_num == KEY_L_BRACK) { if(disp_len < 15) disp_buf[disp_len++] = '('; }
+ 229   1          else if(key_num == KEY_R_BRACK) { if(disp_len < 15) disp_buf[disp_len++] = ')'; }
+ 230   1      
+ 231   1          // ¶ÀÁ¢¼ü£º=£¨¼ÆËã£©
+ 232   1          else if(key_num == KEY_EQ) 
+ 233   1          {
+ 234   2              if(flag_pow) 
+ 235   2              {
+ 236   3                  double exp = atof((char*)disp_buf+4);
+ 237   3                  result = pow(pow_base, exp);
+ 238   3                  reset_calc();
+ 239   3                  sprintf((char*)disp_buf, "%.1f^%.1f=%.2f", pow_base, exp, result);
+ 240   3                  disp_len = strlen((char*)disp_buf);
+ 241   3                  flag_pow = 0;
+ 242   3              } 
+ 243   2              else 
+ 244   2              {
+ 245   3                  disp_buf[disp_len++] = '=';
+ 246   3                  calc_expression();
+ 247   3                  char temp[10];
+ 248   3                  sprintf(temp, "%.2f", result);
+ 249   3                  for(unsigned char i=0; temp[i]!='\0' && disp_len<16; i++) 
+ 250   3                  {
+ 251   4                      disp_buf[disp_len++] = temp[i];
+ 252   4                  }
+ 253   3              }
+ 254   2              flag_eq = 1;
+ 255   2          }
+ 256   1      
+ 257   1          // ¶ÀÁ¢¼ü£ºC£¨ÇåÁã£©
+ 258   1          else if(key_num == KEY_CLR) 
+ 259   1          {
+ 260   2              reset_calc();
+ 261   2          }
+ 262   1      
+ 263   1          // ¶ÀÁ¢¼ü£ºM+£¨¼ÇÒä¼Ó£©
+ 264   1          else if(key_num == KEY_M_PLUS) 
+ 265   1          {
+ 266   2              memory += result;
+ 267   2              char mem_str[16];
+ 268   2              sprintf(mem_str, "M+: %.2f", memory);
+ 269   2              lcd_show_str(0, 1, mem_str);
+ 270   2              delay_ms(500);
+ 271   2              disp_update();
+ 272   2          }
+ 273   1      
+ 274   1          // µÈ´ý°´¼üÊÍ·Å
+ 275   1          while(key_scan_all() != 0xFF);
+ 276   1      }
+ 277          
+ 278          
+ 279          
+ 280          
+ 281          
+ 282          
+ 283          
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  75 ERROR(S)

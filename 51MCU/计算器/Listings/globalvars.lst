@@ -1,0 +1,35 @@
+C51 COMPILER V9.59.0.0   GLOBALVARS                                                        12/02/2025 17:11:20 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE GLOBALVARS
+OBJECT MODULE PLACED IN .\Objects\globalvars.obj
+COMPILER INVOKED BY: D:\software\keil\C51\BIN\C51.EXE globalvars.c OPTIMIZE(8,SPEED) BROWSE INCDIR(..\计算器) DEBUG OBJE
+                    -CTEXTEND PRINT(.\Listings\globalvars.lst) TABS(2) OBJECT(.\Objects\globalvars.obj)
+
+line level    source
+
+   1          #include "globalvars.h"  // 包含头文件，获取 EXPR_LEN、STACK 宏定义
+   2          
+   3          // 定义全局变量（分配内存，与.h中的声明一一对应）
+   4          unsigned char get = 0;                          // 初始化：0（无输入）
+   5          unsigned char duli = 0;                         // 初始化：0（未切换模式）
+   6          unsigned char xdata expr[EXPR_LEN] = {0};       // 初始化：全0（空表达式）
+   7          unsigned char expr_i = 0;                       // 初始化：0（输入起始位置）
+   8          int xdata num_stack[STACK] = {0};               // 初始化：全0（空数字栈）
+   9          char xdata op_stack[STACK] = {0};               // 初始化：全0（空运算符栈）
+  10          int result = 0;                                 // 初始化：0（初始结果）                                //
+             - 2字节（留DATA区）
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   ----    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =     80    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      5    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

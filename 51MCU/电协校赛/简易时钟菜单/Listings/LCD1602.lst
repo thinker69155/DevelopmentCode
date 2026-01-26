@@ -1,0 +1,276 @@
+C51 COMPILER V9.59.0.0   LCD1602                                                           01/23/2026 10:21:33 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE LCD1602
+OBJECT MODULE PLACED IN .\Objects\LCD1602.obj
+COMPILER INVOKED BY: D:\software\keil\C51\BIN\C51.EXE LCD1602.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\List
+                    -ings\LCD1602.lst) TABS(2) OBJECT(.\Objects\LCD1602.obj)
+
+line level    source
+
+   1          #include <REGX52.H>
+   2          #include "delay.h"  // 保留原delay.h（若无需可删除，驱动中已内置简单延时）
+   3          
+   4          // OLED I2C引脚定义（可根据实际接线修改，默认P2.0=SCL，P2.1=SDA）
+   5          sbit OLED_SCL = P2^0;
+   6          sbit OLED_SDIN = P2^1;
+   7          
+   8          // 字库引用（必须包含OLED_Font.h，8x16 ASCII字库）
+   9          #include "OLED_Font.h"
+  10          
+  11          // #################### OLED底层I2C驱动（内部使用，不对外暴露） ####################
+  12          void IIC_Start(void) {
+  13   1          OLED_SCL = 1;
+  14   1          OLED_SDIN = 1;
+  15   1          OLED_SDIN = 0;
+  16   1          OLED_SCL = 0;
+  17   1      }
+  18          
+  19          void IIC_Stop(void) {
+  20   1          OLED_SCL = 1;
+  21   1          OLED_SDIN = 0;
+  22   1          OLED_SDIN = 1;
+  23   1      }
+  24          
+  25          void IIC_Wait_Ack(void) {
+  26   1          OLED_SCL = 1;
+  27   1          OLED_SCL = 0;
+  28   1      }
+  29          
+  30          void Write_IIC_Byte(unsigned char IIC_Byte) {
+  31   1          unsigned char i;
+  32   1          for(i = 0; i < 8; i++) {
+  33   2              OLED_SDIN = (IIC_Byte >> 7) & 0x01;
+  34   2              IIC_Byte <<= 1;
+  35   2              OLED_SCL = 1;
+  36   2              OLED_SCL = 0;
+  37   2          }
+  38   1          IIC_Wait_Ack();
+  39   1      }
+  40          
+  41          void Write_IIC_Cmd(unsigned char Cmd) {
+  42   1          IIC_Start();
+  43   1          Write_IIC_Byte(0x78);  // OLED I2C地址（默认0x78，若不显示可改为0x7A）
+  44   1          Write_IIC_Byte(0x00);  // 写命令标志
+  45   1          Write_IIC_Byte(Cmd);
+  46   1          IIC_Stop();
+  47   1      }
+  48          
+  49          void Write_IIC_Data(unsigned char Data) {
+  50   1          IIC_Start();
+  51   1          Write_IIC_Byte(0x78);
+  52   1          Write_IIC_Byte(0x40);  // 写数据标志
+  53   1          Write_IIC_Byte(Data);
+  54   1          IIC_Stop();
+C51 COMPILER V9.59.0.0   LCD1602                                                           01/23/2026 10:21:33 PAGE 2   
+
+  55   1      }
+  56          
+  57          // OLED设置坐标（内部使用，适配LCD1602的行/列规则）
+  58          // LCD1602：Line=1~2行，Column=1~16列；OLED：对应页0~1，列0~127
+  59          void OLED_Set_Pos(unsigned char Line, unsigned char Column) {
+  60   1          unsigned char Y = (Line == 1) ? 0 : 1;  // LCD第1行→OLED页0，第2行→OLED页1
+  61   1          unsigned char X = (Column - 1) * 8;     // LCD列1→OLED列0，每列占8像素（8x16字体）
+  62   1          Write_IIC_Cmd(0xB0 | Y);                // 设置页地址
+  63   1          Write_IIC_Cmd(0x10 | ((X & 0xF0) >> 4));// 设置高4位列地址
+  64   1          Write_IIC_Cmd(0x00 | (X & 0x0F));       // 设置低4位列地址
+  65   1      }
+  66          
+  67          // OLED清屏（内部使用，适配LCD1602清屏逻辑）
+  68          void OLED_Clear(void) {
+  69   1          unsigned char i, j;
+  70   1          for(i = 0; i < 2; i++) {  // 只清前2页（对应LCD1602的2行）
+  71   2              Write_IIC_Cmd(0xB0 + i);
+  72   2              Write_IIC_Cmd(0x00);
+  73   2              Write_IIC_Cmd(0x10);
+  74   2              for(j = 0; j < 128; j++) Write_IIC_Data(0x00);
+  75   2          }
+  76   1      }
+  77          
+  78          // OLED初始化（内部使用）
+  79          void OLED_Init(void) {
+  80   1          delay(100);  // 上电延时稳定
+  81   1          Write_IIC_Cmd(0xAE);  // 关闭显示
+  82   1          Write_IIC_Cmd(0x00);  // 低列地址
+  83   1          Write_IIC_Cmd(0x10);  // 高列地址
+  84   1          Write_IIC_Cmd(0x40);  // 起始行地址
+  85   1          Write_IIC_Cmd(0xB0);  // 页地址模式
+  86   1          Write_IIC_Cmd(0x81);  // 对比度控制
+  87   1          Write_IIC_Cmd(0xCF);  // 对比度值（0x00~0xFF，可微调）
+  88   1          Write_IIC_Cmd(0xA1);  // 段重映射
+  89   1          Write_IIC_Cmd(0xA6);  // 正常显示
+  90   1          Write_IIC_Cmd(0xA8);  // 多路复用比
+  91   1          Write_IIC_Cmd(0x3F);  // 1/32占空比
+  92   1          Write_IIC_Cmd(0xC8);  // 行重映射
+  93   1          Write_IIC_Cmd(0xD3);  // 显示偏移
+  94   1          Write_IIC_Cmd(0x00);  // 偏移0
+  95   1          Write_IIC_Cmd(0xD5);  // 振荡频率
+  96   1          Write_IIC_Cmd(0x80);  // 默认频率
+  97   1          Write_IIC_Cmd(0xD9);  // 预充电周期
+  98   1          Write_IIC_Cmd(0xF1);  // 预充电配置
+  99   1          Write_IIC_Cmd(0xDA);  // COM引脚配置
+ 100   1          Write_IIC_Cmd(0x12);  // COM硬件配置
+ 101   1          Write_IIC_Cmd(0xDB);  // VCOMH电压
+ 102   1          Write_IIC_Cmd(0x40);  // VCOMH输出
+ 103   1          Write_IIC_Cmd(0x20);  // 内存地址模式
+ 104   1          Write_IIC_Cmd(0x02);  // 页地址模式
+ 105   1          Write_IIC_Cmd(0x8D);  // 电荷泵控制
+ 106   1          Write_IIC_Cmd(0x14);  // 开启电荷泵
+ 107   1          Write_IIC_Cmd(0xAF);  // 开启显示
+ 108   1          OLED_Clear();         // 清屏
+ 109   1      }
+ 110          
+ 111          // #################### 完全兼容LCD1602的对外接口（函数名/参数/功能不变） ############
+             -########
+ 112          /**
+ 113            * @brief  OLED初始化（完全兼容LCD1602_Init()）
+ 114            * @param  无
+ 115            * @retval 无
+C51 COMPILER V9.59.0.0   LCD1602                                                           01/23/2026 10:21:33 PAGE 3   
+
+ 116            */
+ 117          void LCD_Init() {
+ 118   1          OLED_Init();  // 内部调用OLED初始化
+ 119   1      }
+ 120          
+ 121          /**
+ 122            * @brief  在指定位置显示一个字符（完全兼容LCD1602_ShowChar()）
+ 123            * @param  Line 行位置，范围：1~2（与LCD1602一致）
+ 124            * @param  Column 列位置，范围：1~16（与LCD1602一致）
+ 125            * @param  Char 要显示的字符（ASCII码）
+ 126            * @retval 无
+ 127            */
+ 128          void LCD_ShowChar(unsigned char Line, unsigned char Column, char Char) {
+ 129   1          unsigned char i;
+ 130   1          OLED_Set_Pos(Line, Column);
+ 131   1          // F8x16[字符索引][点阵字节索引]，二维数组引用，无语法错误
+ 132   1          for(i = 0; i < 8; i++) {
+ 133   2              Write_IIC_Data(F8x16[Char - ' '][i]);  // 上半部分8字节
+ 134   2          }
+ 135   1          OLED_Set_Pos(Line, Column);
+ 136   1          for(i = 0; i < 8; i++) {
+ 137   2              Write_IIC_Data(F8x16[Char - ' '][i + 8]);  // 下半部分8字节
+ 138   2          }
+ 139   1      }
+ 140          
+ 141          /**
+ 142            * @brief  在指定位置显示字符串（完全兼容LCD1602_ShowString()）
+ 143            * @param  Line 起始行位置，范围：1~2
+ 144            * @param  Column 起始列位置，范围：1~16
+ 145            * @param  String 要显示的字符串
+ 146            * @retval 无
+ 147            */
+ 148          void LCD_ShowString(unsigned char Line, unsigned char Column, char *String) {
+ 149   1          unsigned char i;
+ 150   1          for(i = 0; String[i] != '\0'; i++) {
+ 151   2              // 列数超过16则换行（与LCD1602逻辑一致）
+ 152   2              if(Column + i > 16) {
+ 153   3                  Line = Line == 1 ? 2 : 1;
+ 154   3                  Column = 1;
+ 155   3              }
+ 156   2              LCD_ShowChar(Line, Column + i, String[i]);
+ 157   2          }
+ 158   1      }
+ 159          
+ 160          /**
+ 161            * @brief  返回值=X的Y次方（内部辅助函数，与LCD1602一致）
+ 162            */
+ 163          int LCD_Pow(int X, int Y) {
+ 164   1          unsigned char i;
+ 165   1          int Result = 1;
+ 166   1          for(i = 0; i < Y; i++) {
+ 167   2              Result *= X;
+ 168   2          }
+ 169   1          return Result;
+ 170   1      }
+ 171          
+ 172          /**
+ 173            * @brief  显示无符号数字（完全兼容LCD1602_ShowNum()）
+ 174            * @param  Line 起始行位置，范围：1~2
+ 175            * @param  Column 起始列位置，范围：1~16
+ 176            * @param  Number 要显示的数字，范围：0~65535
+ 177            * @param  Length 要显示数字的长度，范围：1~5
+C51 COMPILER V9.59.0.0   LCD1602                                                           01/23/2026 10:21:33 PAGE 4   
+
+ 178            * @retval 无
+ 179            */
+ 180          void LCD_ShowNum(unsigned char Line, unsigned char Column, unsigned int Number, unsigned char Length) {
+ 181   1          unsigned char i;
+ 182   1          for(i = Length; i > 0; i--) {
+ 183   2              LCD_ShowChar(Line, Column + Length - i, Number / LCD_Pow(10, i - 1) % 10 + '0');
+ 184   2          }
+ 185   1      }
+ 186          
+ 187          /**
+ 188            * @brief  显示带符号数字（完全兼容LCD1602_ShowSignedNum()）
+ 189            * @param  Line 起始行位置，范围：1~2
+ 190            * @param  Column 起始列位置，范围：1~16
+ 191            * @param  Number 要显示的数字，范围：-32768~32767
+ 192            * @param  Length 要显示数字的长度，范围：1~5
+ 193            * @retval 无
+ 194            */
+ 195          void LCD_ShowSignedNum(unsigned char Line, unsigned char Column, int Number, unsigned char Length) {
+ 196   1          unsigned char i;
+ 197   1          unsigned int Number1;
+ 198   1          if(Number >= 0) {
+ 199   2              LCD_ShowChar(Line, Column, '+');
+ 200   2              Number1 = Number;
+ 201   2          } else {
+ 202   2              LCD_ShowChar(Line, Column, '-');
+ 203   2              Number1 = -Number;
+ 204   2          }
+ 205   1          for(i = Length; i > 0; i--) {
+ 206   2              LCD_ShowChar(Line, Column + Length - i + 1, Number1 / LCD_Pow(10, i - 1) % 10 + '0');
+ 207   2          }
+ 208   1      }
+ 209          
+ 210          /**
+ 211            * @brief  显示十六进制数字（完全兼容LCD1602_ShowHexNum()）
+ 212            * @param  Line 起始行位置，范围：1~2
+ 213            * @param  Column 起始列位置，范围：1~16
+ 214            * @param  Number 要显示的数字，范围：0~0xFFFF
+ 215            * @param  Length 要显示数字的长度，范围：1~4
+ 216            * @retval 无
+ 217            */
+ 218          void LCD_ShowHexNum(unsigned char Line, unsigned char Column, unsigned int Number, unsigned char Length) {
+ 219   1          unsigned char i, SingleNumber;
+ 220   1          for(i = Length; i > 0; i--) {
+ 221   2              SingleNumber = Number / LCD_Pow(16, i - 1) % 16;
+ 222   2              if(SingleNumber < 10) {
+ 223   3                  LCD_ShowChar(Line, Column + Length - i, SingleNumber + '0');
+ 224   3              } else {
+ 225   3                  LCD_ShowChar(Line, Column + Length - i, SingleNumber - 10 + 'A');
+ 226   3              }
+ 227   2          }
+ 228   1      }
+ 229          
+ 230          /**
+ 231            * @brief  显示二进制数字（完全兼容LCD1602_ShowBinNum()）
+ 232            * @param  Line 起始行位置，范围：1~2
+ 233            * @param  Column 起始列位置，范围：1~16
+ 234            * @param  Number 要显示的数字，范围：0~0xFFFF
+ 235            * @param  Length 要显示数字的长度，范围：1~16
+ 236            * @retval 无
+ 237            */
+ 238          void LCD_ShowBinNum(unsigned char Line, unsigned char Column, unsigned int Number, unsigned char Length) {
+ 239   1          unsigned char i;
+C51 COMPILER V9.59.0.0   LCD1602                                                           01/23/2026 10:21:33 PAGE 5   
+
+ 240   1          for(i = Length; i > 0; i--) {
+ 241   2              LCD_ShowChar(Line, Column + Length - i, Number / LCD_Pow(2, i - 1) % 2 + '0');
+ 242   2          }
+ 243   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    940    ----
+   CONSTANT SIZE    =   1536    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----      37
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

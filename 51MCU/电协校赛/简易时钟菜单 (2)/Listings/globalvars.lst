@@ -1,0 +1,52 @@
+C51 COMPILER V9.59.0.0   GLOBALVARS                                                        12/16/2025 00:08:35 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE GLOBALVARS
+OBJECT MODULE PLACED IN .\Objects\globalvars.obj
+COMPILER INVOKED BY: D:\software\keil\C51\BIN\C51.EXE globalvars.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\L
+                    -istings\globalvars.lst) TABS(2) OBJECT(.\Objects\globalvars.obj)
+
+line level    source
+
+   1          #include <globalvars.h>
+   2          
+   3          
+   4          // 全局变量
+   5          unsigned char mode = CALENDAR;
+   6          unsigned char set_flag = 0;
+   7          unsigned char select_pos = 0;
+   8          
+   9          // 关键：1ms中断标志和计数器（直接对应实际毫秒）
+  10          unsigned char flag_1ms = 0;               // 1ms标志位
+  11          unsigned int ms_cnt = 0;                  // 毫秒计数器（0-999）
+  12          unsigned char flag_1s = 0;                // 1秒标志位
+  13          
+  14          // 日历数据
+  15          unsigned int calendar[6] = {2025, 11, 12, 10, 30, 0};
+  16          // 倒计时数据
+  17          unsigned int countdown[3] = {0, 0, 10};
+  18          bit countdown_running = 0;
+  19          
+  20          // 秒表数据（时/分/秒/毫秒）
+  21          unsigned int stopwatch[4] = {0, 0, 0, 0};  // [3]：0-999ms（真实毫秒）
+  22          bit stopwatch_running = 0;
+  23          // 秒表记录
+  24          // 秒表记录（显式初始化所有元素为0，避免随机值）
+  25          unsigned int records[3][3] = {{0,0,0}, {0,0,0}, {0,0,0}};  // 每条记录：时/分/秒
+  26          unsigned char record_cnt = 0;
+  27          unsigned char view_idx = 0;
+  28          unsigned char record_idx = 0;  // 下次保存的索引（用于循环覆盖）
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   ----    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     54    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =      2    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

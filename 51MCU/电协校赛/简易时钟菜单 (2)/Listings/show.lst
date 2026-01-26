@@ -1,0 +1,204 @@
+C51 COMPILER V9.59.0.0   SHOW                                                              12/16/2025 00:08:35 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE SHOW
+OBJECT MODULE PLACED IN .\Objects\show.obj
+COMPILER INVOKED BY: D:\software\keil\C51\BIN\C51.EXE show.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listing
+                    -s\show.lst) TABS(2) OBJECT(.\Objects\show.obj)
+
+line level    source
+
+   1          #include <globalvars.h>
+   2          #include "show.h"
+   3          #include "LCD1602.h"
+   4          #include "delay.h"
+   5          // 日历模式显示
+   6          void show_calendar() 
+   7          {
+   8   1          LCD_ShowString(1, 1, "DATE:");
+   9   1          LCD_ShowNum(1, 6, calendar[0], 4);
+  10   1          LCD_ShowChar(1, 10, '-');
+  11   1          LCD_ShowNum(1, 11, calendar[1], 2);
+  12   1          LCD_ShowChar(1, 13, '-');
+  13   1          LCD_ShowNum(1, 14, calendar[2], 2);
+  14   1          LCD_ShowString(2, 1, "TIME:");
+  15   1          LCD_ShowNum(2, 6, calendar[3], 2);
+  16   1          LCD_ShowChar(2, 8, ':');
+  17   1          LCD_ShowNum(2, 9, calendar[4], 2);
+  18   1          LCD_ShowChar(2, 11, ':');
+  19   1          LCD_ShowNum(2, 12, calendar[5], 2);
+  20   1      
+  21   1          if(set_flag) 
+  22   1          {
+  23   2      //        delay(100);
+  24   2              switch(select_pos) 
+  25   2              {
+  26   3                  case 0: LCD_ShowString(1, 6, "    "); break;
+  27   3                  case 1: LCD_ShowString(1, 11, "  "); break;
+  28   3                  case 2: LCD_ShowString(1, 14, "  "); break;
+  29   3                  case 3: LCD_ShowString(2, 6, "  "); break;
+  30   3                  case 4: LCD_ShowString(2, 9, "  "); break;
+  31   3                  case 5: LCD_ShowString(2, 12, "  "); break;
+  32   3              }
+  33   2      //        delay(100);
+  34   2              switch(select_pos) 
+  35   2              {
+  36   3                  case 0: LCD_ShowNum(1, 6, calendar[0], 4); break;
+  37   3                  case 1: LCD_ShowNum(1, 11, calendar[1], 2); break;
+  38   3                  case 2: LCD_ShowNum(1, 14, calendar[2], 2); break;
+  39   3                  case 3: LCD_ShowNum(2, 6, calendar[3], 2); break;
+  40   3                  case 4: LCD_ShowNum(2, 9, calendar[4], 2); break;
+  41   3                  case 5: LCD_ShowNum(2, 12, calendar[5], 2); break;
+  42   3              }
+  43   2              LCD_ShowChar(1, 10, '-');
+  44   2              LCD_ShowChar(1, 13, '-');
+  45   2              LCD_ShowChar(2, 8, ':');
+  46   2              LCD_ShowChar(2, 11, ':');
+  47   2          }
+  48   1      }
+  49          //***************************************************************************
+  50          
+  51          // 倒计时模式显示
+  52          void show_countdown() 
+  53          {
+  54   1          LCD_ShowString(1, 1, "DOWN:");
+C51 COMPILER V9.59.0.0   SHOW                                                              12/16/2025 00:08:35 PAGE 2   
+
+  55   1          LCD_ShowNum(1, 5, countdown[0], 2);
+  56   1          LCD_ShowChar(1, 7, ':');
+  57   1          LCD_ShowNum(1, 8, countdown[1], 2);
+  58   1          LCD_ShowChar(1, 10, ':');
+  59   1          LCD_ShowNum(1, 11, countdown[2], 2);
+  60   1      
+  61   1          if (set_flag) 
+  62   1          {
+  63   2              LCD_ShowString(2, 1, "SET: K2=Q K1=S");
+  64   2          } else 
+  65   1          {
+  66   2              LCD_ShowString(2, 1, countdown_running ? "RUN " : "STOP");
+  67   2          }
+  68   1      
+  69   1          if(set_flag) 
+  70   1          {
+  71   2      //        delay(200);
+  72   2              switch(select_pos) 
+  73   2              {
+  74   3                  case 0: LCD_ShowString(1, 5, "  "); break;
+  75   3                  case 1: LCD_ShowString(1, 8, "  "); break;
+  76   3                  case 2: LCD_ShowString(1, 11, "  "); break;
+  77   3              }
+  78   2      //        delay(200);
+  79   2              switch(select_pos) 
+  80   2              {
+  81   3                  case 0: LCD_ShowNum(1, 5, countdown[0], 2); break;
+  82   3                  case 1: LCD_ShowNum(1, 8, countdown[1], 2); break;
+  83   3                  case 2: LCD_ShowNum(1, 11, countdown[2], 2); break;
+  84   3              }
+  85   2              LCD_ShowChar(1, 7, ':');
+  86   2              LCD_ShowChar(1, 10, ':');
+  87   2          }
+  88   1      }
+  89          //***************************************************************************
+  90          
+  91          // 秒表模式显示
+  92          void show_stopwatch() 
+  93          {
+  94   1          static unsigned char last_h, last_m, last_s, last_ms;
+  95   1          static bit init_flag; 
+  96   1      
+  97   1          // 第一次进入函数时，强制显示初始零
+  98   1          if (init_flag == 0) 
+  99   1          {
+ 100   2              last_h = 0xFF;  // 设为非零，确保后续判断为真
+ 101   2              last_m = 0xFF;
+ 102   2              last_s = 0xFF;
+ 103   2              last_ms = 0xFF;
+ 104   2              init_flag = 1;
+ 105   2      
+ 106   2              // 固定显示的字符（前缀、分隔符）
+ 107   2              LCD_ShowString(1, 1, "SW:");
+ 108   2              LCD_ShowChar(1, 6, ':');
+ 109   2              LCD_ShowChar(1, 9, ':');
+ 110   2              LCD_ShowChar(1, 12, '.');
+ 111   2              LCD_ShowString(2, 1, "        ");
+ 112   2      
+ 113   2              // 强制显示初始零
+ 114   2              LCD_ShowNum(1, 4, 0, 2);  // 时：00
+ 115   2              LCD_ShowNum(1, 7, 0, 2);  // 分：00
+ 116   2              LCD_ShowNum(1, 10, 0, 2); // 秒：00
+C51 COMPILER V9.59.0.0   SHOW                                                              12/16/2025 00:08:35 PAGE 3   
+
+ 117   2              LCD_ShowNum(1, 13, 0, 1); // 毫秒十位：0
+ 118   2              LCD_ShowNum(1, 14, 0, 1); // 毫秒个位：0
+ 119   2      
+ 120   2              // 更新缓存为零
+ 121   2              last_h = 0;
+ 122   2              last_m = 0;
+ 123   2              last_s = 0;
+ 124   2              last_ms = 0;
+ 125   2              return;  // 首次显示完成，直接返回
+ 126   2          }
+ 127   1      
+ 128   1          // 后续仅更新变化的数值
+ 129   1          if (stopwatch[0] != last_h) 
+ 130   1          {
+ 131   2              LCD_ShowNum(1, 4, stopwatch[0], 2);
+ 132   2              last_h = stopwatch[0];
+ 133   2          }
+ 134   1          if (stopwatch[1] != last_m) 
+ 135   1          {
+ 136   2              LCD_ShowNum(1, 7, stopwatch[1], 2);
+ 137   2              last_m = stopwatch[1];
+ 138   2          }
+ 139   1          if (stopwatch[2] != last_s) 
+ 140   1          {
+ 141   2              LCD_ShowNum(1, 10, stopwatch[2], 2);
+ 142   2              last_s = stopwatch[2];
+ 143   2          }
+ 144   1      
+ 145   1      }
+ 146          //***************************************************************************
+ 147          
+ 148          // 查看记录模式显示
+ 149          void show_records() 
+ 150          {
+ 151   1          LCD_WriteCommand(0x01);  // 清屏
+ 152   1        
+ 153   1          // 第一行：记录编号+总记录数
+ 154   1          LCD_ShowString(1, 1, "REC:");
+ 155   1          LCD_ShowNum(1, 5, view_idx + 1, 1);  
+ 156   1          LCD_ShowChar(1, 6, '/');
+ 157   1          LCD_ShowNum(1, 7, record_cnt, 1);    // 显示已保存的记录数
+ 158   1      
+ 159   1          // 第二行：显示记录内容或无记录提示
+ 160   1          if(record_cnt > 0) 
+ 161   1          {
+ 162   2              // 有记录时显示时分秒，格式对齐
+ 163   2              LCD_ShowNum(2, 4, records[view_idx][0], 2);
+ 164   2              LCD_ShowChar(2, 6, ':');
+ 165   2              LCD_ShowNum(2, 7, records[view_idx][1], 2);
+ 166   2              LCD_ShowChar(2, 9, ':');
+ 167   2              LCD_ShowNum(2, 10, records[view_idx][2], 2);
+ 168   2          } 
+ 169   1          else 
+ 170   1          {
+ 171   2              // 无记录提示
+ 172   2              LCD_ShowString(2, 4, "NO DATA");
+ 173   2          }
+ 174   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   1004    ----
+C51 COMPILER V9.59.0.0   SHOW                                                              12/16/2025 00:08:35 PAGE 4   
+
+   CONSTANT SIZE    =     77    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      4    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =      1    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

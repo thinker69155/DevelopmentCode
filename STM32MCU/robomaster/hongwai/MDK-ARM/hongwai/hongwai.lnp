@@ -1,0 +1,22 @@
+--cpu Cortex-M3
+"hongwai\startup_stm32f103xb.o"
+"hongwai\main.o"
+"hongwai\gpio.o"
+"hongwai\stm32f1xx_it.o"
+"hongwai\stm32f1xx_hal_msp.o"
+"hongwai\stm32f1xx_hal_gpio_ex.o"
+"hongwai\stm32f1xx_hal.o"
+"hongwai\stm32f1xx_hal_rcc.o"
+"hongwai\stm32f1xx_hal_rcc_ex.o"
+"hongwai\stm32f1xx_hal_gpio.o"
+"hongwai\stm32f1xx_hal_dma.o"
+"hongwai\stm32f1xx_hal_cortex.o"
+"hongwai\stm32f1xx_hal_pwr.o"
+"hongwai\stm32f1xx_hal_flash.o"
+"hongwai\stm32f1xx_hal_flash_ex.o"
+"hongwai\stm32f1xx_hal_exti.o"
+"hongwai\system_stm32f1xx.o"
+--strict --scatter "hongwai\hongwai.sct"
+--summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
+--info sizes --info totals --info unused --info veneers
+--list "hongwai.map" -o hongwai\hongwai.axf

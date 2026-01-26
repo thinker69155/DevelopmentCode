@@ -1,0 +1,82 @@
+C51 COMPILER V9.59.0.0   MAIN                                                              01/17/2026 19:22:00 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: D:\software\keil\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listing
+                    -s\main.lst) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include <REGX52.H>
+   2          // 定义兼容别名（解决旧Keil对unsigned char的解析错误）
+   3          #define uchar unsigned char
+   4          #define uint  unsigned int
+   5          
+   6          // 74HC595引脚定义
+   7          sbit DIO    = P3^4;
+   8          sbit S_CLK  = P3^5;
+   9          sbit R_CLK  = P3^6;
+  10          #define LED_PORT P0
+  11          
+  12          // 函数声明（用uchar替代unsigned char）
+  13          void _74HC595_Write(uchar Byte);
+  14          void ShowColumn(uchar column, uchar data);
+*** ERROR C141 IN LINE 14 OF main.c: syntax error near ')', expected '<id>'
+  15          void delay(uint t);
+  16          
+  17          // 74HC595写数据
+  18          void _74HC595_Write(uchar Byte)
+  19          {
+  20   1          uchar i;
+  21   1          for(i=0; i<8; i++)
+  22   1          {
+  23   2              DIO = Byte & (0x80 >> i);
+  24   2              S_CLK = 0;
+  25   2              S_CLK = 1;
+  26   2          }
+  27   1          R_CLK = 1;
+  28   1          R_CLK = 0;
+  29   1      }
+  30          
+  31          // 显示指定列
+  32          void ShowColumn(uchar column, uchar data)
+*** ERROR C141 IN LINE 32 OF main.c: syntax error near ')', expected '<id>'
+  33          {
+  34   1          if(column >= 8) return;
+  35   1          _74HC595_Write(data);
+*** ERROR C141 IN LINE 35 OF main.c: syntax error near 'data', expected 'sizeof'
+  36   1          LED_PORT = ~(0x80 >> column);
+  37   1          delay(1);
+  38   1          LED_PORT = 0xff;
+  39   1      }
+  40          
+  41          // 延时函数
+  42          void delay(uint t)
+  43          {
+  44   1          uint i, j;
+  45   1          for(i=t; i>0; i--)
+  46   1              for(j=110; j>0; j--);
+  47   1      }
+  48          
+  49          // 主函数
+  50          void main(void)
+  51          {
+C51 COMPILER V9.59.0.0   MAIN                                                              01/17/2026 19:22:00 PAGE 2   
+
+  52   1          S_CLK = 0;
+  53   1          R_CLK = 0;
+  54   1          while(1)
+  55   1          {
+  56   2              ShowColumn(0, 0x3C);
+  57   2              ShowColumn(1, 0x42);
+  58   2              ShowColumn(2, 0xA9);
+  59   2              ShowColumn(3, 0x85);
+  60   2              ShowColumn(4, 0x85);
+  61   2              ShowColumn(5, 0xA9);
+  62   2              ShowColumn(6, 0x42);
+  63   2              ShowColumn(7, 0x3C);
+  64   2          }
+  65   1      }
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  3 ERROR(S)

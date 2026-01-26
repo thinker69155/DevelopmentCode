@@ -1,0 +1,21 @@
+--cpu Cortex-M3
+"great led\startup_stm32f103xb.o"
+"great led\main.o"
+"great led\stm32f1xx_it.o"
+"great led\stm32f1xx_hal_msp.o"
+"great led\stm32f1xx_hal_gpio_ex.o"
+"great led\stm32f1xx_hal.o"
+"great led\stm32f1xx_hal_rcc.o"
+"great led\stm32f1xx_hal_rcc_ex.o"
+"great led\stm32f1xx_hal_gpio.o"
+"great led\stm32f1xx_hal_dma.o"
+"great led\stm32f1xx_hal_cortex.o"
+"great led\stm32f1xx_hal_pwr.o"
+"great led\stm32f1xx_hal_flash.o"
+"great led\stm32f1xx_hal_flash_ex.o"
+"great led\stm32f1xx_hal_exti.o"
+"great led\system_stm32f1xx.o"
+--strict --scatter "great led\great led.sct"
+--summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
+--info sizes --info totals --info unused --info veneers
+--list "great led.map" -o "great led\great led.axf"

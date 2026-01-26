@@ -1,0 +1,54 @@
+version: "4.1"
+name: project
+type: C51
+deviceName: null
+packDir: null
+srcDirs: []
+virtualFolder:
+  name: <virtual_root>
+  files: []
+  folders:
+    - name: Source Group 1
+      files:
+        - path: main.c
+        - path: delay.c
+        - path: delay.h
+        - path: Key.c
+        - path: Key.h
+      folders: []
+dependenceList: []
+outDir: build
+miscInfo:
+  uid: dad37368f478797d2407ed71027ee135
+targets:
+  Target_1:
+    cppPreprocessAttrs:
+      defineList: []
+      incList:
+        - ../../../software/keil/C51/INC/Atmel
+      libList: []
+    excludeList: []
+    toolchain: Keil_C51
+    toolchainConfigMap:
+      Keil_C51:
+        options:
+          version: 2
+          afterBuildTasks: []
+          asm-compiler: {}
+          beforeBuildTasks: []
+          c/cpp-compiler:
+            optimization-level: level-8
+            optimization-type: SPEED
+          global:
+            ram-mode: SMALL
+            rom-mode: LARGE
+          linker:
+            misc-controls: ""
+            output-format: elf
+            remove-unused: true
+    uploadConfigMap:
+      Custom:
+        bin: ""
+        commandLine: ""
+        eraseChipCommand: ""
+    uploader: Custom

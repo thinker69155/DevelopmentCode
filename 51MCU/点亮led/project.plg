@@ -1,0 +1,14 @@
+<html>
+<body>
+<pre>
+<h1>礦ision Build Log</h1>
+<h2>Project:</h2>
+D:\study\keil\点亮led\project.uvproj
+Project File Date:  10/02/2025
+
+<h2>Output:</h2>
+Build target '目标 1'
+assembling STARTUP.A51...
+compiling main...
+main(1): error C318: can't open file 'main'
+目标未创建

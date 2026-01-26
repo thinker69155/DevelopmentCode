@@ -1,0 +1,13 @@
+C51 COMPILER V9.59.0.0   OLED                                                              01/23/2026 10:30:13 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE OLED
+OBJECT MODULE PLACED IN .\Objects\oled.obj
+COMPILER INVOKED BY: D:\software\keil\C51\BIN\C51.EXE oled.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listing
+                    -s\oled.lst) TABS(2) OBJECT(.\Objects\oled.obj)
+
+line level    source
+
+*** ERROR C318 OF oled.c: can't open file 'oled.c'
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  1 ERROR(S)

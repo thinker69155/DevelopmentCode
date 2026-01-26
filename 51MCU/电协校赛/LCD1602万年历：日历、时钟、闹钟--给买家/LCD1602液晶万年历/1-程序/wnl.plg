@@ -1,0 +1,20 @@
+<html>
+<body>
+<pre>
+<h1>礦ision Build Log</h1>
+<h2>Project:</h2>
+\\Pcshare\套件资料\6-1602带闹钟万年历\6-万年历\1-程序\wnl.uvproj
+Project File Date:  07/06/2014
+
+<h2>Output:</h2>
+Build target 'Target 1'
+assembling STARTUP.A51...
+compiling 万年历程序lcd1602.c...
+linking...
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?READTEMPERATURE?万年繽程序LCD1602
+    CALLER1: ?C_C51STARTUP
+    CALLER2: ?PR?TIMER0?万年繽程序LCD1602
+Program Size: data=53.1 xdata=0 code=6076
+creating hex file from "wnl"...
+"wnl" - 0 Error(s), 1 Warning(s).
