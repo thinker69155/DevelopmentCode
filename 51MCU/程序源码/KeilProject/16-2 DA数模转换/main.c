@@ -2,7 +2,7 @@
 #include "Delay.h"
 #include "Timer0.h"
 
-sbit DA=P2^1;
+sbit DA=P1^1;
 
 unsigned char Counter,Compare;	//计数值和比较值，用于输出PWM
 unsigned char i;

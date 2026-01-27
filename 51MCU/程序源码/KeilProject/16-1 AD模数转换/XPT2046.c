@@ -2,10 +2,10 @@
 #include <INTRINS.H>
 
 //引脚定义
-sbit XPY2046_DIN=P3^4;
-sbit XPY2046_CS=P3^5;
-sbit XPY2046_DCLK=P3^6;
-sbit XPY2046_DOUT=P3^7;
+sbit XPY2046_CS=P3^7;
+sbit XPY2046_DCLK=P2^1;
+sbit XPY2046_DIN=P2^0;//数据输入
+sbit XPY2046_DOUT=P2^5;//数据输出
 
 /**
   * @brief  ZPT2046读取AD值
