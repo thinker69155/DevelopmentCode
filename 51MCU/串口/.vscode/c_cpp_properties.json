@@ -1,0 +1,26 @@
+{
+    "configurations": [
+        {
+            "name": "Win32",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "d:/study/DevelopmentCode/51MCU/串口/libRich",
+                "c:/Users/c'z'w'x'k'n/.vscode/extensions/richintelligent.richextension-4.0.0/include",
+                "c:/Users/c'z'w'x'k'n/.vscode/extensions/richintelligent.richextension-4.0.0/include/Atmel"
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE",
+                "interrupt=",
+                "code=",
+                "xdata="
+            ],
+            "cStandard": "c89",
+            "forcedInclude": [
+                "c:/Users/c'z'w'x'k'n/.vscode/extensions/richintelligent.richextension-4.0.0/include/libRichForced.h"
+            ]
+        }
+    ],
+    "version": 4
+}

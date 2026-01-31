@@ -1,0 +1,104 @@
+version: "4.1"
+name: stm32f1xx_blink_demo
+type: ARM
+deviceName: STM32F102C8
+packDir: .\pack\Keil\STM32F1xx_DFP.1.0.5
+srcDirs:
+  - libraries/STM32F10x_StdPeriph_Driver
+  - source
+virtualFolder:
+  name: <virtual_root>
+  files: []
+  folders: []
+dependenceList: []
+outDir: build
+miscInfo:
+  lastBuildTime: 1608618345249
+  uid: cf747bcacdf64e9a1413f638f2006e18
+targets:
+  Debug:
+    cppPreprocessAttrs:
+      defineList:
+        - USE_STDPERIPH_DRIVER
+        - STM32F10X_MD
+      incList:
+        - libraries/CMSIS
+      libList: []
+    excludeList:
+      - libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_bkp.c
+      - libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_can.c
+      - libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_cec.c
+      - libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_crc.c
+      - libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_dac.c
+      - libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_dbgmcu.c
+      - libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_dma.c
+      - libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_flash.c
+      - libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_fsmc.c
+      - libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_i2c.c
+      - libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_iwdg.c
+      - libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_pwr.c
+      - libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_rtc.c
+      - libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_sdio.c
+      - libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_wwdg.c
+    toolchain: AC5
+    toolchainConfigMap:
+      AC5:
+        archExtensions: ""
+        cpuType: Cortex-M3
+        floatingPointHardware: default
+        options:
+          version: 4
+          afterBuildTasks: []
+          asm-compiler: {}
+          beforeBuildTasks: []
+          c/cpp-compiler:
+            c99-mode: true
+            misc-controls:
+              - --diag_suppress=1
+              - --diag_suppress=1295
+            one-elf-section-per-function: true
+            optimization: level-0
+            warnings: unspecified
+          global:
+            output-debug-info: enable
+            use-microLIB: true
+          linker:
+            $outputTaskExcludes:
+              - .bin
+              - .s19
+            output-format: elf
+        scatterFilePath: undefined
+        storageLayout:
+          RAM:
+            - id: 1
+              isChecked: "1"
+              mem:
+                size: "0x2800"
+                startAddr: "0x20000000"
+              noInit: false
+              tag: IRAM
+          ROM:
+            - id: 1
+              isChecked: "1"
+              isStartup: true
+              mem:
+                size: "0x10000"
+                startAddr: "0x08000000"
+              tag: IROM
+        useCustomScatterFile: false
+    uploadConfigMap:
+      JLink:
+        baseAddr: ""
+        bin: ""
+        cpuInfo:
+          cpuName: STM32F103C8
+          vendor: ST
+        otherCmds: ""
+        proType: 1
+        speed: 8000
+      OpenOCD:
+        baseAddr: "0x08000000"
+        bin: ""
+        interface: cmsis-dap
+        target: stm32f4x
+    uploader: JLink
