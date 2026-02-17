@@ -4,7 +4,6 @@
 #include "Communciate.h"
 #include "Time.h"
 
-uint8_t KeyNum=0;//全局变量，记录按键检测的值
 uint8_t choose=0;//局部变量，储存在首页选择的选项的值
 
 //移动动画相关函数//////////////////////////////////////////////////////////////////////////////////////
@@ -15,29 +14,7 @@ void Mouse() {
 //时间设置的每个时间的UI的结构体
 //菜单中每一项的结构体
 
-/**
- * 标志位移动函数（menu.c内部函数）
- * 配合Key.c文件Key_GetNum()使用
- * @param Flag 需要通过按键进行控制的标志位
- * @param Length 标志位的移动范围：1~Length
- * @return key=1,2返回当前Flag，key=3（按下确认）返回0
- */
-uint8_t Key_To_Flag_Move(uint8_t Flag,uint8_t Length) {
-    KeyNum=Key_GetNum();
-    if (KeyNum==1) {//光标向上移动并选择
-        Flag--;
-        if (Flag==0){Flag==Length;}
-        return Flag;
-    }
-    else if (KeyNum==2) {//光标向下移动并选择
-        Flag++;
-        if (Flag==Length+1){Flag==1;}
-        return Flag;
-    }
-    else if (KeyNum==3) {
-        return 0;
-    }
-}
+
 //显示函数//////////////////////////////////////////////////////////////
 /**
  * 首页菜单显示函数
@@ -60,8 +37,12 @@ void Time_Set_Display() {
 void Choose_Function_Display() {
 
 }
-
-
+void CountDown_Display() {
+    //显示倒计时的时间，按键1旁边显示设置
+}
+void StopWatch_Display() {
+    //显示倒计时的时间，按键1旁边显示设置
+}
 //一级菜单函数////////////////////////////////////////////////////////////////
 
 /**
@@ -189,20 +170,39 @@ uint8_t Clock_menu() {
         }
     }
 }
+//秒表//////////////////////////////////////////////////////////////////
+uint8_t CountDown() {
+    //按键1进入时间设置，默认都是0
+    //按键3选择下一项，按键1,2为选中项加减
+    //按键3按下3次后自动跳出设置
+    //按键1开始，按键2暂停，按键3返回上一级菜单
+    while (1) {
+        uint8_t countdown_flag=0;
+        switch (Key_To_Flag_Move(countdown_flag,4)) {
+            case 1:
+        }
+    }
+}
+
+//停表//////////////////////////////////////////////////////////////////
+uint8_t StopWatch() {
+    //按键1开始，按键2暂停，按键3返回上一级菜单
+}
+
 
 /////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////
 /**
- * 功能表菜单选项执行函数
+ * 功能表菜单选项执行函数【三级】
  * 功能：执行功能表菜单选择的选项，进入相应的菜单
  */
 void Clock_do() {
     if (Clock_menu()==0){return;}
-    else if (Clock_menu()==1){Change_Time(1);}//打开游戏1
-    else if (Clock_menu()==2){Change_Time(2);}//打开游戏2
+    else if (Clock_menu()==1){CountDown();}//倒计时
+    else if (Clock_menu()==2){StopWatch();}//停表
 }
 /**
- * 时间设置菜单选项执行函数
+ * 时间设置菜单选项执行函数【三级】
  * 功能：执行时间设置菜单选择的选项，进入相应的菜单
  */
 void Game_do() {
@@ -211,7 +211,7 @@ void Game_do() {
     else if (Game_menu()==2){Change_Time(2);}//打开游戏2
 }
 /**
- * 时间设置菜单选项执行函数
+ * 时间设置菜单选项执行函数【二级】
  * 功能：执行时间设置菜单选择的选项，进入相应的菜单
  */
 void Time_Set_do() {
@@ -224,7 +224,7 @@ void Time_Set_do() {
     else if (Time_Set_Menu()==6){Change_Time(6);}//修改秒菜单
 }
 /**
- * 功能菜单选项执行函数
+ * 功能菜单选项执行函数【二级】
  * 功能：功能菜单选择的选项，进入相应的菜单
  */
 void Choose_Function_do() {
@@ -239,7 +239,7 @@ void Choose_Function_do() {
     else if (Choose_Function_Menu()==8){Communciate();}//上位机交换指令
 }
 /**
- * 首页选项执行函数
+ * 首页选项执行函数【一级】
  * 功能：执行首页选择的选项，进入相应的菜单
  * 整个菜单系统执行的入口
  */

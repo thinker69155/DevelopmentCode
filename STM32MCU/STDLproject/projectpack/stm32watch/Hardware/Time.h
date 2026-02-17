@@ -9,4 +9,6 @@
 void Show_time_Init();
 void Show_Time();
 uint8_t Change_Time(uint8_t wei);
+uint8_t CountDown();
+uint8_t StopWatch();
 #endif //TEMPLE_PROJECT_TIME_H

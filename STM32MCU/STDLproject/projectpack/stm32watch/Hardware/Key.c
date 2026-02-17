@@ -56,3 +56,25 @@ uint8_t Key_GetNum(void)
 	return  Key;//将按键的值传递给全局指针KeyNum
 
 }
+/**
+ * 标志位移动函数
+ * @param Flag 需要通过按键进行控制的标志位
+ * @param Length 标志位的移动范围：1~Length
+ * @return key=1,2返回当前Flag，key=3（按下确认）返回0
+ */
+uint8_t Key_To_Flag_Move(uint8_t Flag,uint8_t Length) {
+	uint8_t KeyNum=Key_GetNum();
+	if (KeyNum==1) {//光标向上移动并选择
+		Flag--;
+		if (Flag==0){Flag==Length;}
+		return Flag;
+	}
+	else if (KeyNum==2) {//光标向下移动并选择
+		Flag++;
+		if (Flag==Length+1){Flag==1;}
+		return Flag;
+	}
+	else if (KeyNum==3) {
+		return 0;
+	}
+}
