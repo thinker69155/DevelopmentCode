@@ -76,8 +76,8 @@ set(ALL_SOURCES ${STARTUP_FILE} ${USER_SOURCES} ${HARDWARE_SOURCES} ${SYSTEM_SOU
         Hardware/Communciate.h
         Hardware/Serial.c
         Hardware/Serial.h
-        Hardware/Show_time.c
-        Hardware/Show_time.h
+        Hardware/Time.c
+        Hardware/Time.h
         System/MyRTC.c
         System/MyRTC.h
         System/menu.h

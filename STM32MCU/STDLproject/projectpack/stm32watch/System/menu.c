@@ -2,7 +2,7 @@
 #include "Key.h"
 #include "Flashlight.h"
 #include "Communciate.h"
-#include "Show_time.h"
+#include "Time.h"
 
 uint8_t KeyNum=0;//全局变量，记录按键检测的值
 uint8_t choose=0;//局部变量，储存在首页选择的选项的值
@@ -62,7 +62,7 @@ void Choose_Function_Display() {
 }
 
 
-//菜单函数////////////////////////////////////////////////////////////////
+//一级菜单函数////////////////////////////////////////////////////////////////
 
 /**
  * 首页菜单函数【一级菜单】
@@ -82,6 +82,8 @@ uint8_t First_Page_Menu() {
         }
     }
 }
+//二级菜单函数////////////////////////////////////////////////////////////////
+
 /**
  * 功能菜单函数【二级菜单】
  * @return 功能菜单选择选项的标志位
@@ -149,21 +151,77 @@ uint8_t Time_Set_Menu() {
         }
     }
 }
+//三级菜单函数////////////////////////////////////////////////////////////////
 
-//菜单执行函数///////////////////////////////////////////////////////////
+/**
+ * 游戏菜单函数【三级菜单】
+ * @return 游戏菜单选择选项的标志位
+ */
+uint8_t Game_menu() {
+    while (1) {
+        uint8_t game_flag = 0;//定义首页选项选择标志位
+        switch (Key_To_Flag_Move(game_flag,2)) {//检测需要被光标选中的选项
+            case 1:();
+                //显示区域反转颜色实现光标选中
+                //刷新显示
+            case 2:();
+                //显示区域反转颜色实现光标选中
+                //刷新显示
+            case 0:return game_flag;//确认键按下，返回当前光标选中的选项
+        }
+    }
+}
+/**
+ * 功能表菜单函数【三级菜单】
+ * @return 功能表菜单选择选项的标志位
+ */
+uint8_t Clock_menu() {
+    while (1) {
+        uint8_t clock_flag = 0;//定义首页选项选择标志位
+        switch (Key_To_Flag_Move(clock_flag,2)) {//检测需要被光标选中的选项
+            case 1:();
+                //显示区域反转颜色实现光标选中
+                //刷新显示
+            case 2:();
+                //显示区域反转颜色实现光标选中
+                //刷新显示
+            case 0:return clock_flag;//确认键按下，返回当前光标选中的选项
+        }
+    }
+}
 
+/////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////
+/**
+ * 功能表菜单选项执行函数
+ * 功能：执行功能表菜单选择的选项，进入相应的菜单
+ */
+void Clock_do() {
+    if (Clock_menu()==0){return;}
+    else if (Clock_menu()==1){Change_Time(1);}//打开游戏1
+    else if (Clock_menu()==2){Change_Time(2);}//打开游戏2
+}
+/**
+ * 时间设置菜单选项执行函数
+ * 功能：执行时间设置菜单选择的选项，进入相应的菜单
+ */
+void Game_do() {
+    if (Game_menu()==0){return;}
+    else if (Game_menu()==1){Change_Time(1);}//打开游戏1
+    else if (Game_menu()==2){Change_Time(2);}//打开游戏2
+}
 /**
  * 时间设置菜单选项执行函数
  * 功能：执行时间设置菜单选择的选项，进入相应的菜单
  */
 void Time_Set_do() {
     if (Time_Set_Menu()==0){return;}
-    else if (Time_Set_Menu()==1){Change_Time(1);}
-    else if (Time_Set_Menu()==2){Change_Time(2);}
-    else if (Time_Set_Menu()==3){Change_Time(3);}
-    else if (Time_Set_Menu()==4){Change_Time(4);}
-    else if (Time_Set_Menu()==5){Change_Time(5);}
-    else if (Time_Set_Menu()==6){Change_Time(6);}
+    else if (Time_Set_Menu()==1){Change_Time(1);}//修改年菜单
+    else if (Time_Set_Menu()==2){Change_Time(2);}//修改月菜单
+    else if (Time_Set_Menu()==3){Change_Time(3);}//修改日菜单
+    else if (Time_Set_Menu()==4){Change_Time(4);}//修改时菜单
+    else if (Time_Set_Menu()==5){Change_Time(5);}//修改分菜单
+    else if (Time_Set_Menu()==6){Change_Time(6);}//修改秒菜单
 }
 /**
  * 功能菜单选项执行函数
@@ -171,14 +229,14 @@ void Time_Set_do() {
  */
 void Choose_Function_do() {
     if (Choose_Function_Menu()==0){return;}
-    else if (Choose_Function_Menu()==1){Change_Time(1);}
+    else if (Choose_Function_Menu()==1){Change_Time(1);}//时间计算
     else if (Choose_Function_Menu()==2){Change_Time(2);}
     else if (Choose_Function_Menu()==3){Change_Time(3);}
-    else if (Choose_Function_Menu()==4){Flashlight();}
+    else if (Choose_Function_Menu()==4){Flashlight();}//手电筒
     else if (Choose_Function_Menu()==5){Change_Time(5);}
     else if (Choose_Function_Menu()==6){Change_Time(6);}
-    else if (Choose_Function_Menu()==7){Change_Time(5);}
-    else if (Choose_Function_Menu()==8){Change_Time(6);}
+    else if (Choose_Function_Menu()==7){Change_Time(5);}//小游戏
+    else if (Choose_Function_Menu()==8){Communciate();}//上位机交换指令
 }
 /**
  * 首页选项执行函数
