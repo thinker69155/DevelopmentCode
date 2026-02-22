@@ -81,6 +81,19 @@ set(ALL_SOURCES ${STARTUP_FILE} ${USER_SOURCES} ${HARDWARE_SOURCES} ${SYSTEM_SOU
         System/MyRTC.c
         System/MyRTC.h
         System/menu.h
+        Hardware/Emoji.c
+        Hardware/Emoji.h
+        Hardware/Emoji_Data.h
+        Hardware/Emoji_Data.c
+
+        Hardware/Balance.c
+        Hardware/Balance.h
+        Hardware/MPU6050_Reg.h
+        Hardware/MPU6050.h
+        Hardware/MyI2C.c
+        Hardware/Game.c
+        Hardware/Game.h
+
 )
 
 add_executable(${CMAKE_PROJECT_NAME} ${ALL_SOURCES})

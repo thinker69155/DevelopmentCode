@@ -27,10 +27,10 @@ void Flashlight_LED_Init(void){
 }
 
 
+
 /**
-  * 函    数：手电筒执行函数
-  * 参    数：无
-  * 返 回 值：无
+ * 倒计时工作函数
+ * @return 按下确认键，返回0
  */
 uint8_t Flashlight() {
     uint8_t KeyNum_flashlight=0;
