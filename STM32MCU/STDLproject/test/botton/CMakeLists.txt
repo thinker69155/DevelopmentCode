@@ -69,7 +69,11 @@ file(GLOB SYSTEM_SOURCES
 set(ALL_SOURCES ${STARTUP_FILE} ${USER_SOURCES} ${HARDWARE_SOURCES} ${SYSTEM_SOURCES}
         Hardware/OLED_Data.c
         System/syscalls.c
-        System/syscalls.c)
+        System/syscalls.c
+        System/MyRTC.c
+        System/Timer.h.c
+        System/Timer.h.h
+        Hardware/MPU6050.c)
 
 add_executable(${CMAKE_PROJECT_NAME} ${ALL_SOURCES})
 

@@ -26,7 +26,7 @@ typedef struct
 /*ASCII字模数据声明*/
 extern const uint8_t OLED_F8x16[][16];
 extern const uint8_t OLED_F6x8[][6];
-
+extern const uint8_t OLED_F12x24[][36];
 /*汉字字模数据声明*/
 extern const ChineseCell_t OLED_CF16x16[];
 
@@ -41,6 +41,9 @@ extern const uint8_t Menu_Graph_Game[];
 extern const uint8_t Menu_Graph_Compass[];
 extern const uint8_t Menu_Graph_Elevel[];
 extern const uint8_t Menu_Graph_Balance[];
+extern const uint8_t Eyebrow[][32];
+extern const uint8_t Mouth[];
+
 #endif
 
 

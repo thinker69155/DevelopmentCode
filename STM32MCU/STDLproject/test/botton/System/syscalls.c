@@ -87,3 +87,9 @@ int _getpid(void)
 {
     return 1; // 模拟进程ID
 }
+// 解决 _exit 未定义问题
+void _exit(int status)
+{
+    // 裸机程序不需要退出，这里做死循环即可
+    while(1);
+}

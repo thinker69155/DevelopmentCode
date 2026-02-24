@@ -20,32 +20,49 @@ void Flashlight_LED_Init(void){
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_Init(GPIOA, &GPIO_InitStructure);						//将PA1和PA2引脚初始化为推挽输出
+    GPIO_Init(GPIOA, &GPIO_InitStructure);						//将PA1引脚初始化为推挽输出
 
     /*设置GPIO初始化后的默认电平*/
-    GPIO_SetBits(GPIOA, GPIO_Pin_1);				//设置PA1和PA2引脚为高电平
+    GPIO_SetBits(GPIOA, GPIO_Pin_0);				//设置PA1为高电平
 }
 
 
 
 /**
- * 倒计时工作函数
+ * 手电筒函数
  * @return 按下确认键，返回0
  */
 uint8_t Flashlight() {
+    OLED_Clear();
+    OLED_ShowImage(46, 0, 32, 32,Menu_Graph_Flashlight );
+    OLED_Update();
     uint8_t KeyNum_flashlight=0;
     while (1) {
+
         KeyNum_flashlight=Key_GetNum();
-        if (KeyNum_flashlight==1) {
-            GPIO_WriteBit(GPIOA,GPIO_Pin_1,1);
-            OLED_ShowString(4,1,"ON");
+        if (KeyNum_flashlight==0) {
+            OLED_ShowImage(46, 0, 32, 32,Menu_Graph_Flashlight );
         }
-        else if(KeyNum_flashlight==2|KeyNum_flashlight==0){
+        else if (KeyNum_flashlight==1) {
+            GPIO_WriteBit(GPIOA,GPIO_Pin_1,1);
+            OLED_Clear();
+            OLED_ShowImage(46, 0, 32, 32,Menu_Graph_Flashlight );
+            OLED_ShowString(0,30,"ON",OLED_6X8);
+            OLED_Update();
+        }
+        else if(KeyNum_flashlight==2){
             GPIO_WriteBit(GPIOA,GPIO_Pin_1,0);
-            OLED_ShowString(4,1,"OFF");
+            OLED_Clear();
+            OLED_ShowImage(46, 0, 32, 32,Menu_Graph_Flashlight );
+            OLED_ShowString(0,30,"OFF",OLED_6X8);
+            OLED_Update();
         }
         else if(KeyNum_flashlight==3){
+            OLED_Clear();
+            OLED_Update();
+            GPIO_WriteBit(GPIOA,GPIO_Pin_1,0);
             return 0;
         }
+
     }
 }

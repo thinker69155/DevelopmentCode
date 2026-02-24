@@ -1,38 +1,66 @@
+#include <tgmath.h>
+
 #include "stm32f10x.h"                  // Device header
 #include "Delay.h"
 #include "OLED.h"
+#include "MPU6050.h"
+#include "Key.h"
+int16_t ax,ay,az,gx,gy,gz;//MPU6050²âµÃµÄÈýÖá¼ÓËÙ¶ÈºÍ½ÇËÙ¶È
+float roll_g,pitch_g,yaw_g;//ÍÓÂÝÒÇ½âËãµÄÅ·À­½Ç
+float roll_a,pitch_a;//¼ÓËÙ¶È¼Æ½âËãµÄÅ·À­½Ç
+float Roll,Pitch,Yaw;//»¥²¹ÂË²¨ºóµÄÅ·À­½Ç
+float a=0.9;//»¥²¹ÂË²¨Æ÷ÏµÊý
+float Delta_t=0.005;//²ÉÑùÖÜÆÚ
+double pi=3.1415927;
+uint8_t KeyNum=0;
+//Í¨¹ýMPU6050µÄÊý¾Ý½øÐÐ×ËÌ¬½âËãµÄº¯Êý
+void MPU6050_Calculation(void)
+{
+	Delay_ms(5);
+	MPU6050_GetData(&ax,&ay,&az,&gx,&gy,&gz);
 
-/**
-  * 坐标轴定义：
-  * 左上角为(0, 0)点
-  * 横向向右为X轴，取值范围：0~127
-  * 纵向向下为Y轴，取值范围：0~63
-  *
-  *       0             X轴           127
-  *      .------------------------------->
-  *    0 |
-  *      |
-  *      |
-  *      |
-  *  Y轴 |
-  *      |
-  *      |
-  *      |
-  *   63 |
-  *      v
-  *
-  */
+	//Í¨¹ýÍÓÂÝÒÇ½âËãÅ·À­½Ç
+	roll_g=Roll+(float)gx*Delta_t;
+	pitch_g=Pitch+(float)gy*Delta_t;
+	yaw_g=Yaw+(float)gz*Delta_t;
 
+	//Í¨¹ý¼ÓËÙ¶È¼Æ½âËãÅ·À­½Ç
+	pitch_a=atan2((-1)*ax,az)*180/pi;
+	roll_a=atan2(ay,az)*180/pi;
+
+	//Í¨¹ý»¥²¹ÂË²¨Æ÷½øÐÐÊý¾ÝÈÚºÏ
+	Roll=a*roll_g+(1-a)*roll_a;
+	Pitch=a*pitch_g+(1-a)*pitch_a;
+	Yaw=a*yaw_g;
+
+}
+
+//ÏÔÊ¾MPU6050½çÃæµÄUI
+void Show_MPU6050_UI(void)
+{
+
+	OLED_Printf(0,16,OLED_8X16,"Roll: %.2f",Roll);
+	OLED_Printf(0,32,OLED_8X16,"Pitch:%.2f",Pitch);
+	OLED_Printf(0,48,OLED_8X16,"Yaw:  %.2f",Yaw);
+}
+
+//¿ØÖÆ¹â±êÔÚMPU6050½çÃæÒÆ¶¯µÄº¯Êý
 int main(void)
 {
-	/*OLED初始化*/
-	OLED_Init();
+	while(1)
+	{
+		/*KeyNum=Key_GetNum();
+		if(KeyNum==3)
+		{
+			OLED_Clear();
+			OLED_Update();
+			return 0;
+		}*/
 
-	/*在(0, 0)位置显示字符'A'，字体大小为8*16点阵*/
-	OLED_ShowChar(0, 0, 'A', OLED_8X16);
-	/*调用OLED_Update函数，将OLED显存数组的内容更新到OLED硬件进行显示*/
-	OLED_Update();
-	while (1) {
-
+		OLED_Clear();
+		MPU6050_Calculation();
+		Show_MPU6050_UI();
+		OLED_ReverseArea(0,0,16,16);
+		OLED_Update();
 	}
 }

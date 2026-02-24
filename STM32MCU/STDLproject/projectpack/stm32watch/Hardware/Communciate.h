@@ -4,6 +4,8 @@
 
 #ifndef TEMPLE_PROJECT_COMMUNCIATE_H
 #define TEMPLE_PROJECT_COMMUNCIATE_H
+#include <stdint.h>
+
 void Communciate_Init(void);
-void Communciate(void);
+uint8_t Communciate(void);
 #endif //TEMPLE_PROJECT_COMMUNCIATE_H

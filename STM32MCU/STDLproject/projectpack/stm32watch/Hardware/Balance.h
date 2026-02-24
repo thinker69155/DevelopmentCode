@@ -4,5 +4,7 @@
 
 #ifndef TEMPLE_PROJECT_BALANCE_H
 #define TEMPLE_PROJECT_BALANCE_H
-
+#include <stdint.h>
+void MPU6050_Calculation(void);
+uint8_t Balance() ;
 #endif //TEMPLE_PROJECT_BALANCE_H

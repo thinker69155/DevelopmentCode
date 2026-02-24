@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <stddef.h>  // 补充size_t/ptrdiff_t的标准定义
 #include <sys/stat.h> // 新增：包含struct stat和S_IFCHR的定义
+#include <stdlib.h>
 
 // 定义堆内存的起始和结束地址（根据你的STM32F103配置调整）
 // 堆起始地址 = _end（由链接脚本定义），堆结束地址 = RAM末尾
@@ -87,3 +88,11 @@ int _getpid(void)
 {
     return 1; // 模拟进程ID
 }
+
+// 解决 _exit 未定义问题
+void _exit(int status)
+{
+    // 裸机程序不需要退出，这里做死循环即可
+    while(1);
+}
+

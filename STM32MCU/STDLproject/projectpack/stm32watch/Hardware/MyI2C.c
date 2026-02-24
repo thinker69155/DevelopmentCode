@@ -57,10 +57,10 @@ void MyI2C_Init(void)
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_OD;
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10 | GPIO_Pin_11;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_Init(GPIOB, &GPIO_InitStructure);					//将PB10和PB11引脚初始化为开漏输出
+	GPIO_Init(GPIOB, &GPIO_InitStructure);					//将PB12和PB13引脚初始化为开漏输出
 	
 	/*设置默认电平*/
-	GPIO_SetBits(GPIOB, GPIO_Pin_10 | GPIO_Pin_11);			//设置PB10和PB11引脚初始化后默认为高电平（释放总线状态）
+	GPIO_SetBits(GPIOB, GPIO_Pin_10 | GPIO_Pin_11);			//设置PB12和PB13引脚初始化后默认为高电平（释放总线状态）
 }
 
 /*协议层*/

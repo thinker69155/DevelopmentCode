@@ -76,8 +76,7 @@ set(ALL_SOURCES ${STARTUP_FILE} ${USER_SOURCES} ${HARDWARE_SOURCES} ${SYSTEM_SOU
         Hardware/Communciate.h
         Hardware/Serial.c
         Hardware/Serial.h
-        Hardware/Time.c
-        Hardware/Time.h
+
         System/MyRTC.c
         System/MyRTC.h
         System/menu.h
@@ -93,7 +92,10 @@ set(ALL_SOURCES ${STARTUP_FILE} ${USER_SOURCES} ${HARDWARE_SOURCES} ${SYSTEM_SOU
         Hardware/MyI2C.c
         Hardware/Game.c
         Hardware/Game.h
-
+        Hardware/Time_do.c
+        Hardware/Time_do.h
+        System/Timer.c
+        System/Timer.h
 )
 
 add_executable(${CMAKE_PROJECT_NAME} ${ALL_SOURCES})
