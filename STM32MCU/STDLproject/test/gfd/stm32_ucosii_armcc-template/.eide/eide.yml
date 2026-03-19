@@ -1,0 +1,94 @@
+version: "4.1"
+name: stm32_ucosii_armcc
+type: ARM
+deviceName: STM32F103C8
+packDir: .pack/Keil/STM32F1xx_DFP.2.3.0
+srcDirs:
+  - Lib
+  - Src
+virtualFolder:
+  name: <virtual_root>
+  files: []
+  folders: []
+dependenceList: []
+outDir: build
+miscInfo:
+  lastBuildTime: 1602911538912
+  uid: 4f20050e44090b21c887bd68e4791adb
+targets:
+  Release:
+    cppPreprocessAttrs:
+      defineList:
+        - STM32F10X_MD
+        - USE_STDPERIPH_DRIVER
+      incList: []
+      libList: []
+    excludeList:
+      - Src/startup_stm32f103xb.s
+    toolchain: AC5
+    toolchainConfigMap:
+      AC5:
+        archExtensions: ""
+        cpuType: Cortex-M3
+        floatingPointHardware: none
+        options:
+          version: 4
+          afterBuildTasks: []
+          asm-compiler: {}
+          beforeBuildTasks: []
+          c/cpp-compiler:
+            CXX_FLAGS: --diag_suppress=1 --diag_suppress=1295
+            C_FLAGS: --diag_suppress=1 --diag_suppress=1295
+            c99-mode: true
+            one-elf-section-per-function: true
+            optimization: level-0
+          global:
+            output-debug-info: enable
+            use-microLIB: true
+          linker:
+            output-format: elf
+        scatterFilePath: undefined
+        storageLayout:
+          RAM:
+            - id: 1
+              isChecked: true
+              mem:
+                size: "0x5000"
+                startAddr: "0x20000000"
+              noInit: false
+              tag: IRAM
+          ROM:
+            - id: 1
+              isChecked: true
+              isStartup: true
+              mem:
+                size: "0x10000"
+                startAddr: "0x08000000"
+              tag: IROM
+        useCustomScatterFile: false
+    uploadConfigMap:
+      JLink:
+        baseAddr: "0x08000000"
+        bin: ""
+        cpuInfo:
+          cpuName: STM32F103C8
+          vendor: ST
+        otherCmds: ""
+        proType: 1
+        speed: 8000
+      OpenOCD:
+        baseAddr: "0x08000000"
+        bin: ""
+        interface: stlink
+        target: stm32f1x
+      STLink:
+        address: "0x08000000"
+        bin: ""
+        elFile: None
+        optionBytes: .eide/release.st.option.bytes.ini
+        otherCmds: ""
+        proType: SWD
+        resetMode: default
+        runAfterProgram: true
+        speed: 4000
+    uploader: OpenOCD
